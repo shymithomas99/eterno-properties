@@ -1,0 +1,158 @@
+@extends("admin.layouts.app")
+@section('title', 'Gallery Categories')
+@section("content")
+
+    <!-- Begin Page Content -->
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Page Heading -->
+            <div class="col-6">
+            <h1 class="h3 mb-2 text-gray-800">
+                Gallery Categories
+            </h1>
+            </div>
+            <div class="col-6 text-right">
+                <a href="{{route('admin.gallery-categories.create')}}" class="btn btn-primary" ><i class="fa fa-plus"></i> Add</a>
+            </div>
+        </div>
+        <!--<p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.-->
+        <!--    For more information about DataTables, please visit the <a target="_blank"-->
+        <!--        href="https://datatables.net">official DataTables documentation</a>.</p>-->
+
+        <!-- DataTales Example -->
+        <div class="card shadow mb-4">
+            <!--<div class="card-header py-3">-->
+            <!--    <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>-->
+            <!--</div>-->
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="gallery-category-table" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Sort Order</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- /.container-fluid -->
+@endsection
+
+@push('modal')      
+
+    <!-- Delete Modal-->
+    <div class="modal fade" id="delete-gallery-category-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"></h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Are you sure you want to delete this data?</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger btn-delete-gallery-category "><i class="fa fa-trash"></i> Delete</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>                
+                </div>
+            </div>
+        </div>
+    </div>
+  
+@endpush
+
+@push('style')
+<!-- Toastr CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+@endpush
+
+@push('script')
+<!-- Page level plugins -->
+<script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+
+<!-- Page level custom scripts -->
+<script src="{{ asset('js/demo/datatables-demo.js') }}"></script>
+<!--<script src="{{ asset('js/jquery.toast.min.js')}}" type="text/javascript"></script>-->
+<!--<script src="{{ asset('js/toastr.js')}}" type="text/javascript"></script>-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<!-- Toastr JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<script>
+    @if(session('success'))
+        toastr.success("{{ session('success') }}");
+    @endif
+
+    @if(session('error'))
+        toastr.error("{{ session('error') }}");
+    @endif
+
+    @if(session('warning'))
+        toastr.warning("{{ session('warning') }}");
+    @endif
+
+    @if(session('info'))
+        toastr.info("{{ session('info') }}");
+    @endif
+</script>
+
+<script type="text/javascript">
+
+   $(function() {
+
+    $('#gallery-category-table').DataTable({
+
+         processing: true,
+         serverSide: true,
+
+         ajax: '{{ route("admin.gallery-categories.index") }}',
+
+         columns: [
+            { data: 'name', name: 'name' },
+            { data: 'sort_order', name: 'sort_order' },
+            { data: 'status', name: 'status' },
+            { data: 'actions', orderable: false}
+
+         ],
+         order: [[ 0, "desc" ]]
+
+     });
+ 
+
+     $('table').on('click','.gallery-category-delete', function(e){
+        var href=$(this).data('href');
+            $('.btn-delete-gallery-category').off().click(function() {
+		      $.ajax({
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}, 
+                    type: 'DELETE',
+                    //data:{},
+                    dataType : 'JSON', 
+                    url : href,
+                    success: function(response){
+                        $('#delete-gallery-category-modal').modal('hide');
+                        $('#gallery-category-table').DataTable().ajax.reload();
+                        toastr.success(response.message);
+                    },
+                    error: function (xhr) {
+                        $('#delete-gallery-category-modal').modal('hide');
+                        toastr.error('Something went wrong.', 'Error');
+                    }
+              });
+   		 });
+    });
+
+   });
+
+</script>
+@endpush
