@@ -78,6 +78,7 @@
                             <li> <a href="{{ route('about-us') }}"> About Us </a> </li>
                             <li> <a href="{{ route('offers') }}"> Offers </a> </li>
                             <li> <a href="{{ route('experiences') }}"> Experiences </a> </li>
+                            <li> <a href="{{ route('rooms') }}"> Rooms </a> </li>
                             <li> <a href="{{ route('gallery') }}"> Gallery </a> </li>
                             <li> <a href="{{ route('contact') }}"> Contact </a> </li>
                         </ul>

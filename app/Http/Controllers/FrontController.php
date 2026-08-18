@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Enums\AboutStatus;
 use App\Mail\ContactEnquiryAdminMail;
 use App\Mail\ContactEnquiryUserMail;
+use App\Mail\BookingEnquiryAdminMail;
+use App\Mail\BookingEnquiryUserMail;
 use App\Models\About;
 use App\Models\AboutCoreValue;
 use App\Models\AboutPhilosophy;
@@ -14,7 +16,9 @@ use App\Models\Experience;
 use App\Models\ExperiencePage;
 use App\Models\Newsletter;
 use App\Enums\Status;
+use App\Models\AmenityCategory;
 use App\Models\Banner;
+use App\Models\BookingEnquiry;
 use App\Models\Gallery;
 use App\Models\GalleryCategory;
 use App\Models\GalleryIntro;
@@ -22,6 +26,8 @@ use App\Models\Offer;
 use App\Models\OfferIntro;
 use App\Models\Resort;
 use App\Models\ResortIntro;
+use App\Models\Room;
+use App\Models\RoomPage;
 use App\Models\Testimonial;
 use App\Models\TestimonialIntro;
 use App\Models\VideoSection;
@@ -471,5 +477,145 @@ class FrontController extends Controller
             'success' => true,
             'message' => 'Thank you for subscribing to our newsletter!',
         ], 200);
+    }
+
+
+
+    public function bookingForm()
+    {
+
+        $rooms = Room::orderBy('sort_order', 'asc')->get();
+
+        $amenityCategories = AmenityCategory::with('amenities')
+            ->where('status', 1)
+            ->orderBy('sort_order', 'asc')
+            ->get();
+
+        return view('front.booking-form', compact('rooms', 'amenityCategories'));
+    }
+
+
+    public function bookingStore(Request $request)
+    {
+        if ($request->filled('username')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unable to submit your enquiry. Please try again.',
+            ], 422);
+        }
+
+        $validator = validator($request->all(), [
+            'guestName' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:255',
+            'arrivalDate' => 'required|date',
+            'guests' => 'required|integer|min:1',
+            'recaptcha_token' => 'required|string',
+        ], [
+            'guestName.required' => 'Please enter your name.',
+            'email.required' => 'Please enter your email address.',
+            'email.email' => 'Please enter a valid email address.',
+            'phone.required' => 'Please enter your phone number.',
+            'arrivalDate.required' => 'Please select an arrival date.',
+            'guests.required' => 'Please enter number of guests.',
+            'recaptcha_token.required' => 'Please complete the security verification.',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        // Verify reCAPTCHA v3
+        try {
+            $recaptcha = \Illuminate\Support\Facades\Http::asForm()->post(
+                'https://www.google.com/recaptcha/api/siteverify',
+                [
+                    'secret' => config('services.recaptcha.secret_key'),
+                    'response' => $request->input('recaptcha_token'),
+                    'remoteip' => $request->ip(),
+                ]
+            );
+        } catch (\Throwable $e) {
+            \Log::error('reCAPTCHA connection error', ['message' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Security verification is currently unavailable. Please try again.',
+            ], 500);
+        }
+
+        $recaptchaData = $recaptcha->json();
+
+        if (!$recaptcha->successful() || !($recaptchaData['success'] ?? false) || ($recaptchaData['action'] ?? '') !== 'booking_form') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Security verification failed. Please try again.',
+            ], 422);
+        }
+
+        $score = (float) ($recaptchaData['score'] ?? 0);
+
+        if ($score < 0.5) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Security verification failed. Please try again.',
+            ], 422);
+        }
+
+        $data = $validator->validated();
+
+        // Prepare message to store
+        $message = $request->input('message', '');
+        $message .= "\n\nArrival Date: " . $request->input('arrivalDate') . "\nGuests: " . $request->input('guests');
+
+        if ($request->filled('amenities')) {
+            $message .= "\nAmenities: " . implode(', ', (array) $request->input('amenities'));
+        }
+
+        // Map preferred room to resort field for ContactEnquiry
+        $resort = $request->input('resort');
+
+        $enquiry = BookingEnquiry::create([
+            'name' => $request->input('guestName'),
+            'email' => $request->input('email'),
+            'phone' => $request->input('phone'),
+            'resort' => $resort,
+            'message' => $message,
+        ]);
+
+        // Send notification emails
+        try {
+            Mail::to(env('MAIL_ADMIN_ADDRESS'))->send(new BookingEnquiryAdminMail($enquiry));
+            Mail::to($enquiry->email)->send(new BookingEnquiryUserMail($enquiry));
+        } catch (\Throwable $e) {
+            \Log::error('Booking enquiry mail error', ['message' => $e->getMessage()]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Your booking enquiry has been submitted successfully. We will get back to you soon.',
+        ]);
+    }
+
+
+
+    public function rooms()
+    {
+
+        $roomPage = RoomPage::first();
+
+        $rooms = Room::with('galleryImages')
+            ->where('status', 'active')
+            ->orderBy('sort_order', 'asc')
+            ->get();
+
+        $amenityCategories = AmenityCategory::with('amenities')
+            ->where('status', 1)
+            ->orderBy('sort_order', 'asc')
+            ->get();
+
+        return view('front.rooms', compact('rooms', 'amenityCategories', 'roomPage'));
     }
 }

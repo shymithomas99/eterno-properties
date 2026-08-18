@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Controllers\Admin\RoomsController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\AboutController;
+use App\Http\Controllers\Admin\AmenityCategoryController;
+use App\Http\Controllers\Admin\AmenityController;
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\GalleryCategoryController;
 use App\Http\Controllers\Admin\GalleryController;
@@ -24,6 +27,7 @@ use App\Http\Controllers\Admin\GalleryIntroController;
 use App\Http\Controllers\Admin\NewsletterController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\ResortIntroController;
+use App\Http\Controllers\Admin\RoomPageController;
 use App\Http\Controllers\Admin\TestimonialIntroController;
 
 /*
@@ -54,35 +58,35 @@ Route::middleware('auth')->group(function () {
     Route::prefix('resorts/{type}')
         ->where(['type' => '1'])
         ->group(function () {
-        Route::get('/create', [ResortController::class, 'create'])->name('resorts.create');
-        Route::post('/', [ResortController::class, 'store'])->name('resorts.store');
-        Route::delete('/{resort}', [ResortController::class, 'destroy'])->name('resorts.destroy');
-    });
+            Route::get('/create', [ResortController::class, 'create'])->name('resorts.create');
+            Route::post('/', [ResortController::class, 'store'])->name('resorts.store');
+            Route::delete('/{resort}', [ResortController::class, 'destroy'])->name('resorts.destroy');
+        });
     Route::prefix('resorts/{type}')
-    ->where(['type' => '1|2|3|4'])
-    ->group(function () {
-        Route::get('/', [ResortController::class, 'index'])->name('resorts.index');
-        Route::get('/{resort}', [ResortController::class, 'show'])->name('resorts.show');
-        Route::get('/{resort}/edit', [ResortController::class, 'edit'])->name('resorts.edit');
-        Route::put('/{resort}', [ResortController::class, 'update'])->name('resorts.update');
-    });
+        ->where(['type' => '1|2|3|4'])
+        ->group(function () {
+            Route::get('/', [ResortController::class, 'index'])->name('resorts.index');
+            Route::get('/{resort}', [ResortController::class, 'show'])->name('resorts.show');
+            Route::get('/{resort}/edit', [ResortController::class, 'edit'])->name('resorts.edit');
+            Route::put('/{resort}', [ResortController::class, 'update'])->name('resorts.update');
+        });
     Route::get('resort-intro', [ResortIntroController::class, 'edit'])
-            ->name('resort-intro.edit');
+        ->name('resort-intro.edit');
     Route::put('resort-intro', [ResortIntroController::class, 'update'])
-            ->name('resort-intro.update');
+        ->name('resort-intro.update');
     Route::resource('testimonials', TestimonialController::class);
     Route::resource('gallery-categories', GalleryCategoryController::class);
     Route::prefix('gallery/{type}')
-    ->where(['type' => '1|2|3'])
-    ->group(function () {
-        Route::get('/', [GalleryController::class, 'index'])->name('galleries.index');
-        Route::get('/create', [GalleryController::class, 'create'])->name('galleries.create');
-        Route::post('/', [GalleryController::class, 'store'])->name('galleries.store');
-        Route::get('/{gallery}', [GalleryController::class, 'show'])->name('galleries.show');
-        Route::get('/{gallery}/edit', [GalleryController::class, 'edit'])->name('galleries.edit');
-        Route::put('/{gallery}', [GalleryController::class, 'update'])->name('galleries.update');
-        Route::delete('/{gallery}', [GalleryController::class, 'destroy'])->name('galleries.destroy');
-    });
+        ->where(['type' => '1|2|3'])
+        ->group(function () {
+            Route::get('/', [GalleryController::class, 'index'])->name('galleries.index');
+            Route::get('/create', [GalleryController::class, 'create'])->name('galleries.create');
+            Route::post('/', [GalleryController::class, 'store'])->name('galleries.store');
+            Route::get('/{gallery}', [GalleryController::class, 'show'])->name('galleries.show');
+            Route::get('/{gallery}/edit', [GalleryController::class, 'edit'])->name('galleries.edit');
+            Route::put('/{gallery}', [GalleryController::class, 'update'])->name('galleries.update');
+            Route::delete('/{gallery}', [GalleryController::class, 'destroy'])->name('galleries.destroy');
+        });
     Route::prefix('offers/{type}')
         ->where(['type' => '1|2'])
         ->group(function () {
@@ -212,4 +216,149 @@ Route::middleware('auth')->group(function () {
 
     Route::delete('newsletter-enquiries/{newsletter}', [NewsletterController::class, 'destroy'])
         ->name('newsletters.destroy');
+
+
+    Route::prefix('rooms')
+        ->group(function () {
+
+            Route::get('/', [RoomsController::class, 'index'])
+                ->name('rooms.index');
+
+            Route::get('/create', [RoomsController::class, 'create'])
+                ->name('rooms.create');
+
+            Route::post('/', [RoomsController::class, 'store'])
+                ->name('rooms.store');
+
+            Route::get('/{room}', [RoomsController::class, 'show'])
+                ->name('rooms.show');
+
+            Route::get('/{room}/edit', [RoomsController::class, 'edit'])
+                ->name('rooms.edit');
+
+            Route::put('/{room}', [RoomsController::class, 'update'])
+                ->name('rooms.update');
+
+            Route::delete('/{room}', [RoomsController::class, 'destroy'])
+                ->name('rooms.destroy');
+
+            /*
+        |--------------------------------------------------------------------------
+        | Gallery
+        |--------------------------------------------------------------------------
+        */
+
+            Route::get(
+                '/{id}/gallery-images-form',
+                [RoomsController::class, 'galleryImagesForm']
+            )->name('rooms.gallery-images-form');
+
+            Route::post(
+                '/gallery/upload-image',
+                [RoomsController::class, 'uploadImage']
+            )->name('rooms.upload-image');
+
+            Route::post(
+                '/gallery/delete-image',
+                [RoomsController::class, 'deleteImage']
+            )->name('rooms.delete-image');
+
+            Route::patch(
+                '/{id}/toggle-publish',
+                [RoomsController::class, 'togglePublish']
+            )->name('rooms.toggle-publish');
+        });
+
+
+
+
+    /*
+|--------------------------------------------------------------------------
+| Amenity Categories
+|--------------------------------------------------------------------------
+*/
+
+    Route::resource(
+        'amenity-categories',
+        AmenityCategoryController::class
+    )->names('amenity-categories');
+
+    Route::post(
+        'amenity-categories/{amenityCategory}/toggle-status',
+        [AmenityCategoryController::class, 'toggleStatus']
+    )->name('amenity-categories.toggle-status');
+
+
+    /*
+|--------------------------------------------------------------------------
+| Amenities
+|--------------------------------------------------------------------------
+*/
+
+    Route::get(
+        'amenities',
+        [AmenityController::class, 'index']
+    )->name('amenities.index');
+
+    Route::get(
+        'amenities/create',
+        [AmenityController::class, 'create']
+    )->name('amenities.create');
+
+    Route::post(
+        'amenities',
+        [AmenityController::class, 'store']
+    )->name('amenities.store');
+
+
+    /*
+|--------------------------------------------------------------------------
+| Edit all amenities belonging to a category
+|--------------------------------------------------------------------------
+*/
+
+    Route::get(
+        'amenities/{category}/edit',
+        [AmenityController::class, 'edit']
+    )->name('amenities.edit');
+
+    Route::put(
+        'amenities/{category}',
+        [AmenityController::class, 'update']
+    )->name('amenities.update');
+
+
+    /*
+|--------------------------------------------------------------------------
+| Delete individual amenity
+|--------------------------------------------------------------------------
+*/
+
+    Route::delete(
+        'amenities/{amenity}',
+        [AmenityController::class, 'destroy']
+    )->name('amenities.destroy');
+
+
+    /*
+|--------------------------------------------------------------------------
+| Delete all amenities under a category
+|--------------------------------------------------------------------------
+*/
+
+    Route::delete(
+        'amenities/category/{category}',
+        [AmenityController::class, 'destroyCategory']
+    )->name('amenities.destroy-category');
+
+
+    Route::get(
+        'room-page',
+        [RoomPageController::class, 'edit']
+    )->name('room-page.edit');
+
+    Route::put(
+        'room-page',
+        [RoomPageController::class, 'update']
+    )->name('room-page.update');
 });
