@@ -9,7 +9,6 @@ class Offer extends Model
 {
     protected $fillable = [
         'type',
-        'resort_id',
         'title',
         'description',
         'content',
@@ -25,10 +24,5 @@ class Offer extends Model
         return [
             'status' => Status::class,
         ];
-    }
-
-    public function resort()
-    {
-        return $this->belongsTo(Resort::class);
     }
 }

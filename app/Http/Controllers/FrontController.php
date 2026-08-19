@@ -148,9 +148,6 @@ class FrontController extends Controller
             ->where('status', Status::ACTIVE)
             ->first();
 
-        $resorts = Resort::orderBy('sort_order', 'ASC')
-            ->get();
-
         $categories = GalleryCategory::where('status', Status::ACTIVE)
             ->orderBy('sort_order', 'ASC')
             ->where('status', Status::ACTIVE)
@@ -164,7 +161,6 @@ class FrontController extends Controller
 
         return view('front.gallery', compact(
             'galleryIntro',
-            'resorts',
             'categories',
             'galleries'
         ));
@@ -176,9 +172,6 @@ class FrontController extends Controller
             ->where('status', Status::ACTIVE)
             ->first();
 
-        $resorts = Resort::orderBy('sort_order', 'ASC')
-            ->get();
-
         $offers = Offer::where('type', 2)
             ->where('status', Status::ACTIVE)
             ->orderBy('sort_order', 'ASC')
@@ -186,7 +179,6 @@ class FrontController extends Controller
 
         return view('front.offers', compact(
             'offerIntro',
-            'resorts',
             'offers'
         ));
     }

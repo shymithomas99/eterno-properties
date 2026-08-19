@@ -11,11 +11,6 @@
 
                 @if ($type === '2')
                     <div class="row mb-3">
-                        <div class="col-md-3 font-weight-bold">Resort:</div>
-                        <div class="col-md-9">{{ $offer->resort->name }}</div>
-                    </div>
-
-                    <div class="row mb-3">
                         <div class="col-md-3 font-weight-bold">Title:</div>
                         <div class="col-md-9">{{ $offer->title }}</div>
                     </div>

@@ -7,7 +7,6 @@ use App\Models\Offer;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use App\Enums\Status;
-use App\Models\Resort;
 use Illuminate\Validation\Rule;
 
 class OfferController extends Controller
@@ -19,25 +18,9 @@ class OfferController extends Controller
     {
         if ($request->ajax()) {
 
-            $query = Offer::with('resort')->select('id', 'resort_id', 'image', 'title', 'status', 'sort_order', 'created_at')->where('type', $type)->orderBy('id', 'DESC');
+            $query = Offer::select('id', 'image', 'title', 'status', 'sort_order', 'created_at')->where('type', $type)->orderBy('id', 'DESC');
 
             return $dataTables->eloquent($query)
-                ->addColumn('resort_name', function (Offer $offer) {
-                    return $offer->resort?->name;
-                })
-                ->filterColumn('resort_name', function ($query, $keyword) {
-                    $query->whereHas('resort', function ($q) use ($keyword) {
-                        $q->where('name', 'like', "%{$keyword}%");
-                    });
-                })
-                ->orderColumn('resort_name', function ($query, $order) {
-                    $query->orderBy(
-                        Resort::select('name')
-                            ->whereColumn('resorts.id', 'offers.resort_id')
-                            ->limit(1),
-                        $order
-                    );
-                })
                 ->editColumn('image', function (Offer $offer) {
                     $image_url = $offer->image
                         ? asset('uploads/offers/' . $offer->image)
@@ -84,10 +67,8 @@ class OfferController extends Controller
     public function create($type)
     {
         $offer = new Offer();
-        $resorts = Resort::orderBy('sort_order', 'ASC')
-            ->pluck('name', 'id');
 
-        return view('admin.offers.form', compact('type', 'offer', 'resorts'));
+        return view('admin.offers.form', compact('type', 'offer'));
     }
 
     /**
@@ -96,10 +77,6 @@ class OfferController extends Controller
     public function store(Request $request, $type)
     {
         $validated = $request->validate([
-            'resort_id' => [
-                $type == 2 ? 'required' : 'nullable',
-                'exists:resorts,id',
-            ],
             'title' => [
                 $type == 2 ? 'required' : 'nullable',
                 'string',
@@ -168,10 +145,7 @@ class OfferController extends Controller
      */
     public function edit($type, Offer $offer)
     {
-        $resorts = Resort::orderBy('sort_order', 'ASC')
-            ->pluck('name', 'id');
-
-        return view('admin.offers.form', compact('type', 'offer', 'resorts'));
+        return view('admin.offers.form', compact('type', 'offer'));
     }
 
     /**
@@ -181,10 +155,6 @@ class OfferController extends Controller
     {
         $validated = $request->validate(
             [
-                'resort_id' => [
-                    $type == 2 ? 'required' : 'nullable',
-                    'exists:resorts,id',
-                ],
                 'title' => [
                     $type == 2 ? 'required' : 'nullable',
                     'string',
@@ -223,9 +193,6 @@ class OfferController extends Controller
                 ],
                 'sort_order' => ['required', 'integer', 'min:1'],
                 'status' => ['required', Rule::enum(Status::class)],
-            ],
-            [
-                'resort_id.required' => ['The resort field is required.'],
             ]
         );
 

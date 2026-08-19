@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use App\Enums\Status;
 use App\Models\GalleryCategory;
-use App\Models\Resort;
 use Illuminate\Validation\Rule;
 
 class GalleryController extends Controller
@@ -20,25 +19,9 @@ class GalleryController extends Controller
     {
         if ($request->ajax()) {
 
-            $query = Gallery::with(['resort', 'galleryCategory'])->select('id', 'resort_id', 'gallery_category_id', 'image', 'sort_order', 'status', 'created_at')->where('type', $type)->orderBy('id', 'DESC');
+            $query = Gallery::with('galleryCategory')->select('id', 'gallery_category_id', 'image', 'sort_order', 'status', 'created_at')->where('type', $type)->orderBy('id', 'DESC');
 
             return $dataTables->eloquent($query)
-                ->addColumn('resort_name', function (Gallery $gallery) {
-                    return $gallery->resort?->name;
-                })
-                ->filterColumn('resort_name', function ($query, $keyword) {
-                    $query->whereHas('resort', function ($q) use ($keyword) {
-                        $q->where('name', 'like', "%{$keyword}%");
-                    });
-                })
-                ->orderColumn('resort_name', function ($query, $order) {
-                    $query->orderBy(
-                        Resort::select('name')
-                            ->whereColumn('resorts.id', 'galleries.resort_id')
-                            ->limit(1),
-                        $order
-                    );
-                })
                 ->addColumn('gallery_category_name', function (Gallery $gallery) {
                     return $gallery->galleryCategory?->name;
                 })
@@ -102,14 +85,11 @@ class GalleryController extends Controller
     {
         $gallery = new Gallery();
 
-        $resorts = Resort::orderBy('sort_order', 'ASC')
-            ->pluck('name', 'id');
-
         $galleryCategories = GalleryCategory::orderBy('sort_order', 'ASC')
             ->where('status', Status::ACTIVE)
             ->pluck('name', 'id');
 
-        return view('admin.galleries.form', compact('type', 'gallery', 'resorts', 'galleryCategories'));
+        return view('admin.galleries.form', compact('type', 'gallery', 'galleryCategories'));
     }
 
     /**
@@ -119,11 +99,6 @@ class GalleryController extends Controller
     {
         $validated = $request->validate(
             [
-                'resort_id' => [
-                    $type == 2 ? 'required' : 'nullable',
-                    'exists:resorts,id',
-                ],
-
                 'gallery_category_id' => [
                     $type == 2 ? 'required' : 'nullable',
                     'exists:gallery_categories,id',
@@ -172,7 +147,6 @@ class GalleryController extends Controller
                 ],
             ],
             [
-                'resort_id.required' => 'The resort field is required.',
                 'gallery_category_id.required' => 'The category field is required.',
             ]
         );
@@ -205,14 +179,11 @@ class GalleryController extends Controller
      */
     public function edit($type, Gallery $gallery)
     {
-        $resorts = Resort::orderBy('sort_order', 'ASC')
-            ->pluck('name', 'id');
-
         $galleryCategories = GalleryCategory::orderBy('id', 'DESC')
             ->where('status', Status::ACTIVE)
             ->pluck('name', 'id');
 
-        return view('admin.galleries.form', compact('type', 'gallery', 'resorts', 'galleryCategories'));
+        return view('admin.galleries.form', compact('type', 'gallery', 'galleryCategories'));
     }
 
     /**
@@ -221,10 +192,6 @@ class GalleryController extends Controller
     public function update(Request $request, $type, Gallery $gallery)
     {
         $validated = $request->validate([
-            'resort_id' => [
-                $type == 2 ? 'required' : 'nullable',
-                'exists:resorts,id',
-            ],
             'gallery_category_id' => [
                 $type == 2 ? 'required' : 'nullable',
                 'exists:gallery_categories,id',

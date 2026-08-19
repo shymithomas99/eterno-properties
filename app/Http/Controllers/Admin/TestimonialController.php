@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Testimonial;
-use App\Models\Resort;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use App\Enums\Status;
@@ -17,46 +16,30 @@ class TestimonialController extends Controller
      */
     public function index(Request $request, DataTables $dataTables)
     {
-        if($request->ajax()){
-        
-            $query = Testimonial::with('resort')->select('id', 'resort_id', 'customer_name', 'customer_image', 'title', 'status', 'sort_order', 'created_at')->orderBy('id','DESC');
-     
-            return $dataTables->eloquent($query)
-            ->addColumn('resort_name', function (Testimonial $testimonial) {
-                return $testimonial->resort?->name;
-            })
-            ->filterColumn('resort_name', function ($query, $keyword) {
-                $query->whereHas('resort', function ($q) use ($keyword) {
-                    $q->where('name', 'like', "%{$keyword}%");
-                });
-            })
-            ->orderColumn('resort_name', function ($query, $order) {
-                $query->orderBy(
-                    Resort::select('name')
-                        ->whereColumn('resorts.id', 'testimonials.resort_id')
-                        ->limit(1),
-                    $order
-                );
-            })
-            ->editColumn('customer_image', function (Testimonial $testimonial) {
-                $customer_image_url = $testimonial->customer_image 
-                    ? asset('uploads/testimonials/' . $testimonial->customer_image) 
-                    : asset('img/blank-pic.png');
-                return '<img src="' . $customer_image_url . '" width="100" height="90" class="img-thumbnail" />';
-            })
-            ->editColumn('status', function (Testimonial $testimonial) {
-                $class = match ($testimonial->status) {
-                    Status::ACTIVE => 'success',
-                    Status::INACTIVE => 'danger',
-                };
+        if ($request->ajax()) {
 
-                return '<span class="badge badge-' . $class . '">'
-                    . $testimonial->status->label()
-                    . '</span>';
-            })
-            ->addColumn('actions', function (Testimonial $testimonial) {
-                return
-                    '<a href="' . route('admin.testimonials.show', $testimonial) . '" 
+            $query = Testimonial::select('id', 'customer_name', 'customer_image', 'title', 'status', 'sort_order', 'created_at')->orderBy('id', 'DESC');
+
+            return $dataTables->eloquent($query)
+                ->editColumn('customer_image', function (Testimonial $testimonial) {
+                    $customer_image_url = $testimonial->customer_image
+                        ? asset('uploads/testimonials/' . $testimonial->customer_image)
+                        : asset('img/blank-pic.png');
+                    return '<img src="' . $customer_image_url . '" width="100" height="90" class="img-thumbnail" />';
+                })
+                ->editColumn('status', function (Testimonial $testimonial) {
+                    $class = match ($testimonial->status) {
+                        Status::ACTIVE => 'success',
+                        Status::INACTIVE => 'danger',
+                    };
+
+                    return '<span class="badge badge-' . $class . '">'
+                        . $testimonial->status->label()
+                        . '</span>';
+                })
+                ->addColumn('actions', function (Testimonial $testimonial) {
+                    return
+                        '<a href="' . route('admin.testimonials.show', $testimonial) . '" 
                         class="btn btn-sm" title="View">
                         <i class="fa fa-eye"></i>
                     </a> 
@@ -71,9 +54,9 @@ class TestimonialController extends Controller
                         title="Delete">
                         <i class="fa fa-trash"></i>
                     </a>';
-            })      
-           ->rawColumns(['customer_image', 'status', 'actions'])
-           ->make(true);
+                })
+                ->rawColumns(['customer_image', 'status', 'actions'])
+                ->make(true);
         }
         return view('admin.testimonials.index');
     }
@@ -84,10 +67,8 @@ class TestimonialController extends Controller
     public function create()
     {
         $testimonial = new Testimonial();
-        $resorts = Resort::orderBy('sort_order', 'ASC')
-        ->pluck('name', 'id');
 
-        return view('admin.testimonials.form', compact('testimonial', 'resorts'));
+        return view('admin.testimonials.form', compact('testimonial'));
     }
 
     /**
@@ -95,19 +76,17 @@ class TestimonialController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'resort_id' => ['required', 'exists:resorts,id'],
-            'customer_name' => ['required', 'string', 'max:255'],
-            'customer_place' => ['required', 'string', 'max:255'],
-            'title' => ['required', 'string', 'max:255'],
-            'content' => ['required'],
-            'customer_image' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'dimensions:width=100,height=100', 'max:30'],
-            'sort_order' => ['required', 'integer', 'min:1'],
-            'status' => ['required', Rule::enum(Status::class)],
-        ],
-        [
-            'resort_id.required' => ['The resort field is required.'],
-        ]);
+        $validated = $request->validate(
+            [
+                'customer_name' => ['required', 'string', 'max:255'],
+                'customer_place' => ['required', 'string', 'max:255'],
+                'title' => ['required', 'string', 'max:255'],
+                'content' => ['required'],
+                'customer_image' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'dimensions:width=100,height=100', 'max:30'],
+                'sort_order' => ['required', 'integer', 'min:1'],
+                'status' => ['required', Rule::enum(Status::class)],
+            ]
+        );
 
         $fileName = null;
         if ($request->hasFile('customer_image')) {
@@ -136,10 +115,7 @@ class TestimonialController extends Controller
      */
     public function edit(Testimonial $testimonial)
     {
-        $resorts = Resort::orderBy('sort_order', 'ASC')
-        ->pluck('name', 'id');
-
-        return view('admin.testimonials.form', compact('testimonial', 'resorts'));
+        return view('admin.testimonials.form', compact('testimonial'));
     }
 
     /**
@@ -148,7 +124,6 @@ class TestimonialController extends Controller
     public function update(Request $request, Testimonial $testimonial)
     {
         $validated = $request->validate([
-            'resort_id' => ['required', 'exists:resorts,id'],
             'customer_name' => ['required', 'string', 'max:255'],
             'customer_place' => ['required', 'string', 'max:255'],
             'title' => ['required', 'string', 'max:255'],
@@ -163,7 +138,7 @@ class TestimonialController extends Controller
             $file = $request->file('customer_image');
             $fileName = time() . '-' . uniqid() . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('uploads/testimonials'), $fileName);
-            
+
             if ($testimonial->customer_image && file_exists(public_path('uploads/testimonials/' . $testimonial->customer_image))) {
                 unlink(public_path('uploads/testimonials/' . $testimonial->customer_image));
             }
@@ -183,6 +158,6 @@ class TestimonialController extends Controller
     {
         $testimonial->delete();
 
-        return response()->json(['status'=>'success', 'message'=>'Data deleted successfully!']);
+        return response()->json(['status' => 'success', 'message' => 'Data deleted successfully!']);
     }
 }

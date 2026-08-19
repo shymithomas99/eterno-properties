@@ -24,22 +24,6 @@
                     <div class="row">
                         @if ($type === '2')
                             <div class="form-group col-md-6">
-                                <label><strong>Resort <span class="text-danger">*</span></strong></label>
-                                <select name="resort_id" id="resort_id" class="form-control">
-                                    <option value="">-- Select Resort --</option>
-                                    @foreach ($resorts as $id => $name)
-                                        <option value="{{ $id }}"
-                                            {{ old('resort_id', $gallery->resort_id ?? '') == $id ? 'selected' : '' }}>
-                                            {{ $name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('resort_id')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </div>
-
-                            <div class="form-group col-md-6">
                                 <label><strong>Category <span class="text-danger">*</span></strong></label>
                                 <select name="gallery_category_id" id="gallery_category_id" class="form-control">
                                     <option value="">-- Select Category --</option>

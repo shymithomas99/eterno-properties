@@ -365,8 +365,7 @@
                             <div class="testimonial-slide">
                                 @foreach ($column as $testimonial)
                                     <div class="testimonial-card {{ !$loop->first ? 'testimonial-card-offset' : '' }}">
-                                        <span
-                                            class="testimonial-tag {{ $tagClasses[$tagIndex % count($tagClasses)] }}">{{ $testimonial->resort?->name }}</span>
+
                                         <h5>"{{ $testimonial->title }}"</h5>
                                         <p>"{{ $testimonial->content }}"</p>
                                         <div class="testimonial-author">
@@ -389,8 +388,6 @@
                             <div class="testimonial-slide">
                                 @foreach ($column as $testimonial)
                                     <div class="testimonial-card {{ !$loop->first ? 'testimonial-card-offset' : '' }}">
-                                        <span
-                                            class="testimonial-tag {{ $tagClasses[$tagIndex % count($tagClasses)] }}">{{ $testimonial->resort?->name }}</span>
                                         <h5>"{{ $testimonial->title }}"</h5>
                                         <p>"{{ $testimonial->content }}"</p>
                                         <div class="testimonial-author">

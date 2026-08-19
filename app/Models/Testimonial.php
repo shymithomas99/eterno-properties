@@ -8,7 +8,6 @@ use App\Enums\Status;
 class Testimonial extends Model
 {
     protected $fillable = [
-        'resort_id',
         'customer_name',
         'customer_place',
         'customer_image',
@@ -23,10 +22,5 @@ class Testimonial extends Model
         return [
             'status' => Status::class,
         ];
-    }
-
-    public function resort()
-    {
-        return $this->belongsTo(Resort::class);
     }
 }
