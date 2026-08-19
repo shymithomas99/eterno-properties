@@ -1,5 +1,5 @@
 @extends('front.layouts.app')
-@section('title', 'Offers | ')
+@section('title', 'Booking Enquiry | ')
 {{--  <title>Booking Enquiry - Eterno Hotels & Resorts</title>  --}}
 @section('content')
 
@@ -8,13 +8,13 @@
     <section class="hero-banner contact-banner"
         style="background-image:
         linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)),
-        url('asset('images/contact-hero-bg.jpg') ');">
+        url('{{ $bookingPage?->banner_image ? asset('uploads/booking-page/' . $bookingPage->banner_image) : '' }}');">
 
         {{--  {{ dd($page) }}  --}}
         <div class="hero-inner-content px-2">
-            <h1>Booking Enquiry</h1>
-            <p>Ready to experience the warmth and luxury of Eterno? Fill out the form below and our reservations team
-                will get back to you within 24 hours.</p>
+            <h1>{{ $bookingPage?->banner_title ?? 'Booking Enquiry' }}</h1>
+            <p>{{ $bookingPage?->banner_description ?? 'Ready to experience the warmth and luxury of Eterno? Fill out the form below and our reservations team will get back to you within 24 hours.' }}
+            </p>
         </div>
         <div class="breadcrumb">
             <a href="{{ route('home') }}">Home</a><span>&rsaquo;</span>Booking Form

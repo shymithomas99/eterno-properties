@@ -19,14 +19,8 @@
                 <div class="row">
 
                     <div class="col-md-12 mb-4">
-
-                        <label class="form-label">
-                            <strong>Gallery Images</strong>
-
-                            <small class="text-muted">
-                                (3456 × 2156 px)
-                            </small>
-                        </label>
+                        <label><strong>Gallery Images (850 × 630 px, max 100 KB) <span
+                                    class="text-danger">*</span></strong></label>
 
                         <div class="input-images-1"></div>
 

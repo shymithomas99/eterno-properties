@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('main_image')->nullable();
 
             $table->string('bed_type')->nullable();
-            $table->unsignedInteger('guests')->nullable();
+            $table->string('guests')->nullable();
             $table->string('size')->nullable();
             $table->string('view')->nullable();
 

@@ -35,7 +35,7 @@
         style="
         background-image:
         linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)),
-        url('{{ $roomPage?->banner_image ? asset($roomPage->banner_image) : asset('images/contact-hero-bg.jpg') }}');
+             url('{{ $roomPage?->banner_image ? asset('uploads/room-page/' . $roomPage->banner_image) : '' }}');
     ">
         <div class="hero-inner-content px-2">
             <h1>
@@ -117,12 +117,6 @@
                             </div>
                         </div>
 
-                        {{--  <div id="{{ $galleryId }}" style="display:none;">
-                            @foreach ($room->galleryImages as $g)
-                                <img src="{{ asset('uploads/rooms/gallery-images/' . $g->image) }}"
-                                    alt="{{ $room->name }}">
-                            @endforeach
-                        </div>  --}}
 
                         <div id="{{ $galleryId }}" style="display:none;">
                             @if ($room->main_image)
@@ -173,7 +167,7 @@
                         Reserve your sanctuary amidst the mist-kissed hills and verdant forests.
                         Let us craft an unforgettable retreat tailored to your desires.
                     </p>
-                    <a href="#" class="btn-custom btn-primary-custom">Book Your Stay Now</a>
+                    <a href="{{ route('booking-form') }}" class="btn-custom btn-primary-custom">Book Your Stay Now</a>
                 </div>
             </div>
 

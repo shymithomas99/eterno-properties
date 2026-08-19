@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\AboutStatus;
 use App\Mail\ContactEnquiryAdminMail;
 use App\Mail\ContactEnquiryUserMail;
 use App\Mail\BookingEnquiryAdminMail;
@@ -19,6 +18,7 @@ use App\Enums\Status;
 use App\Models\AmenityCategory;
 use App\Models\Banner;
 use App\Models\BookingEnquiry;
+use App\Models\BookingPage;
 use App\Models\Gallery;
 use App\Models\GalleryCategory;
 use App\Models\GalleryIntro;
@@ -485,13 +485,14 @@ class FrontController extends Controller
     {
 
         $rooms = Room::orderBy('sort_order', 'asc')->get();
+        $bookingPage = BookingPage::first();
 
         $amenityCategories = AmenityCategory::with('amenities')
             ->where('status', 1)
             ->orderBy('sort_order', 'asc')
             ->get();
 
-        return view('front.booking-form', compact('rooms', 'amenityCategories'));
+        return view('front.booking-form', compact('rooms', 'amenityCategories', 'bookingPage'));
     }
 
 
@@ -510,6 +511,7 @@ class FrontController extends Controller
             'phone' => 'required|string|max:255',
             'arrivalDate' => 'required|date',
             'guests' => 'required|integer|min:1',
+            'message' => 'required|string',
             'recaptcha_token' => 'required|string',
         ], [
             'guestName.required' => 'Please enter your name.',
@@ -518,6 +520,7 @@ class FrontController extends Controller
             'phone.required' => 'Please enter your phone number.',
             'arrivalDate.required' => 'Please select an arrival date.',
             'guests.required' => 'Please enter number of guests.',
+            'message.required' => 'Please enter your message.',
             'recaptcha_token.required' => 'Please complete the security verification.',
         ]);
 

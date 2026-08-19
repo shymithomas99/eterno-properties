@@ -60,7 +60,7 @@
                     </li>
 
 
-                    <li class="nav-item mega-dropdown">
+                    {{--  <li class="nav-item mega-dropdown">
 
                         <a class="nav-link" href="#" id="megaTrigger">
                             Our Resorts
@@ -71,7 +71,7 @@
                             <div class="mega-menu">
                                 <div class="container">
                                     <div class="row">
-                                        {{-- Resort List --}}
+
                                         <div class="col-lg-4 col-xxl-3">
                                             <ul class="mega-resort-list">
                                                 @foreach ($megaMenuResorts as $key => $resort)
@@ -89,7 +89,7 @@
                                             </ul>
                                         </div>
 
-                                        {{-- Resort Image --}}
+
                                         <div class="col-lg-4">
                                             <div class="mega-image">
                                                 @if ($megaMenuResorts->count())
@@ -100,7 +100,6 @@
                                             </div>
                                         </div>
 
-                                        {{-- Resort Content --}}
                                         <div class="col-lg-4 col-xxl-5">
                                             <div class="mega-content">
                                                 @if ($megaMenuResorts->count())
@@ -121,12 +120,12 @@
                                 </div>
                             </div>
                         @endif
-                    </li>
+                    </li>  --}}
 
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('offers') ? 'active' : '' }}"
-                            href="{{ route('offers') }}">
-                            Offers
+                        <a class="nav-link {{ request()->routeIs('rooms') ? 'active' : '' }}"
+                            href="{{ route('rooms') }}">
+                            Rooms
                         </a>
                     </li>
 
@@ -138,9 +137,9 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('rooms') ? 'active' : '' }}"
-                            href="{{ route('rooms') }}">
-                            Rooms
+                        <a class="nav-link {{ request()->routeIs('offers') ? 'active' : '' }}"
+                            href="{{ route('offers') }}">
+                            Offers
                         </a>
                     </li>
 
@@ -158,13 +157,14 @@
                         </a>
                     </li>
                 </ul>
-                <a href="#" class="btn-custom  btn-primary-custom" id="bookNowBtn">Book Now</a>
+                <a href="{{ route('booking-form') }}" class="btn-custom  btn-primary-custom" id="bookNowBtn">Book
+                    Now</a>
             </div>
         </div>
     </nav>
 
     <!-- Book Now Modal -->
-    @if ($bookNowResorts->count())
+    {{--  @if ($bookNowResorts->count())
         <div class="book-modal-overlay" id="bookModal">
             <div class="book-modal">
                 <button class="book-modal-close" id="bookModalClose"><i class="bi bi-x-lg"></i></button>
@@ -181,4 +181,4 @@
                 </div>
             </div>
         </div>
-    @endif
+    @endif  --}}

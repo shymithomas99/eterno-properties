@@ -589,6 +589,24 @@
 
             </li>
 
+            <li
+                class="nav-item {{ request()->is('admin/booking-page*') || request()->is('admin/booking-enquiry*') ? 'active' : '' }}">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#bookingMenu"
+                    aria-expanded="{{ request()->is('admin/booking-page*') || request()->is('admin/booking-enquiry*') ? 'true' : 'false' }}">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Manage Booking</span>
+                </a>
+                <div id="bookingMenu"
+                    class="collapse {{ request()->is('admin/booking-page*') || request()->is('admin/booking-enquiry*') ? 'show' : '' }}">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item {{ request()->is('admin/booking-page*') ? 'active' : '' }}"
+                            href="{{ route('admin.booking-page.edit') }}">Page</a>
+                        <a class="collapse-item {{ request()->is('admin/booking-enquiry*') ? 'active' : '' }}"
+                            href="{{ route('admin.booking-enquiry.index') }}">Enquiries</a>
+                    </div>
+                </div>
+            </li>
+
 
             <li class="nav-item {{ request()->is('admin/resorts/4*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('admin.resorts.index', 4) }}"> <i class="fas fa-building"></i>

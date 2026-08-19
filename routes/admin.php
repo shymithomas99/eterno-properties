@@ -28,6 +28,8 @@ use App\Http\Controllers\Admin\NewsletterController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\ResortIntroController;
 use App\Http\Controllers\Admin\RoomPageController;
+use App\Http\Controllers\Admin\BookingPageController;
+use App\Http\Controllers\Admin\BookingEnquiryController;
 use App\Http\Controllers\Admin\TestimonialIntroController;
 
 /*
@@ -204,6 +206,11 @@ Route::middleware('auth')->group(function () {
         ContactEnquiryController::class
     )->only(['index', 'show', 'destroy']);
 
+    Route::resource(
+        'booking-enquiry',
+        BookingEnquiryController::class
+    )->only(['index', 'show', 'destroy']);
+
 
     // Settings
     Route::get('settings', [SettingsController::class, 'edit'])->name('settings.edit');
@@ -361,4 +368,14 @@ Route::middleware('auth')->group(function () {
         'room-page',
         [RoomPageController::class, 'update']
     )->name('room-page.update');
+
+    Route::get(
+        'booking-page',
+        [BookingPageController::class, 'edit']
+    )->name('booking-page.edit');
+
+    Route::put(
+        'booking-page',
+        [BookingPageController::class, 'update']
+    )->name('booking-page.update');
 });

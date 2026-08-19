@@ -84,7 +84,8 @@ class RoomsController extends Controller
                 'nullable',
                 'image',
                 'mimes:jpg,jpeg,png,webp',
-                'max:2048',
+                'max:100',
+                'dimensions:width=850,height=630',
             ],
 
             'sort_order' => [
@@ -196,7 +197,8 @@ class RoomsController extends Controller
                 'nullable',
                 'image',
                 'mimes:jpg,jpeg,png,webp',
-                'max:2048',
+                'max:100',
+                'dimensions:width=850,height=630',
             ],
 
             'sort_order' => [
@@ -333,8 +335,18 @@ class RoomsController extends Controller
      */
     public function uploadImage(Request $request)
     {
+        // $request->validate([
+        //     'file' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+        // ]);
+
         $request->validate([
-            'file' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'file' => [
+                'required',
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:100',
+                'dimensions:width=850,height=630',
+            ],
         ]);
 
         $room = Room::findOrFail($request->id);

@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Rooms Page')
+@section('title', 'Booking Page')
 
 @section('content')
 
@@ -10,7 +10,7 @@
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
 
             <h1 class="h3 mb-0 text-gray-800">
-                Rooms Page
+                Booking Page
             </h1>
 
         </div>
@@ -35,7 +35,7 @@
 
 
         {{-- Main Form --}}
-        <form action="{{ route('admin.room-page.update') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('admin.booking-page.update') }}" method="POST" enctype="multipart/form-data">
 
             @csrf
             @method('PUT')
@@ -63,15 +63,17 @@
                         <div class="col-md-6">
 
                             <label for="banner_title">
+
                                 <strong>
                                     Banner Title
                                     <span class="text-danger">*</span>
                                 </strong>
+
                             </label>
 
                             <input type="text" name="banner_title" id="banner_title" class="form-control"
-                                value="{{ old('banner_title', $roomPage->banner_title) }}"
-                                placeholder="Select Your Sanctuary">
+                                value="{{ old('banner_title', $bookingPage->banner_title) }}"
+                                placeholder="Enter banner title">
 
                             @error('banner_title')
                                 <small class="text-danger">
@@ -98,15 +100,15 @@
 
                                     <span class="file-name">
 
-                                        {{ $roomPage->banner_image ? basename($roomPage->banner_image) : 'Choose file' }}
+                                        {{ $bookingPage->banner_image ? basename($bookingPage->banner_image) : 'Choose file' }}
 
                                     </span>
 
 
-                                    @if ($roomPage->banner_image)
+                                    @if ($bookingPage->banner_image)
                                         <img id="banner_uploaded_img"
-                                            src="{{ asset('uploads/room-page/' . $roomPage->banner_image) }}"
-                                            class="file-preview" alt="Rooms Banner Image">
+                                            src="{{ asset('uploads/booking-page/' . $bookingPage->banner_image) }}"
+                                            class="file-preview" alt="Booking Banner Image">
                                     @endif
 
                                 </label>
@@ -136,7 +138,7 @@
 
 
                             <textarea name="banner_description" id="banner_description" rows="5" class="form-control"
-                                placeholder="Enter banner description">{{ old('banner_description', $roomPage->banner_description) }}</textarea>
+                                placeholder="Enter banner description">{{ old('banner_description', $bookingPage->banner_description) }}</textarea>
 
 
                             @error('banner_description')
@@ -295,7 +297,6 @@
             @endif
 
 
-
             /*
             |--------------------------------------------------------------------------
             | Banner Image Preview
@@ -351,7 +352,7 @@
 
                         class: 'file-preview',
 
-                        alt: 'Rooms Banner Image'
+                        alt: 'Booking Banner Image'
 
                     });
 
