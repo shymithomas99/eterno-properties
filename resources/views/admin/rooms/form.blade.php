@@ -4,6 +4,8 @@
 
 @section('content')
 
+    @use(App\Enums\Status)
+
     <div class="container-fluid">
 
         {{-- Page Header --}}
@@ -35,7 +37,8 @@
 
 
         {{-- Main Form --}}
-        <form method="POST" action="{{ $room->id ? route('admin.rooms.update', $room) : route('admin.rooms.store') }}"
+        <form method="POST"
+            action="{{ $room->id ? route('admin.rooms.update', ['type' => $type, 'room' => $room]) : route('admin.rooms.store', $type) }}"
             enctype="multipart/form-data">
 
             @csrf
@@ -85,26 +88,28 @@
                         </div>
 
 
-                        {{-- Slug --}}
-                        <div class="col-md-6 mb-3">
+                        {{-- Slug (rooms page only) --}}
+                        @if ((int) $type === 2)
+                            <div class="col-md-6 mb-3">
 
-                            <label for="slug">
-                                <strong>
-                                    Slug
-                                    <span class="text-danger">*</span>
-                                </strong>
-                            </label>
+                                <label for="slug">
+                                    <strong>
+                                        Slug
+                                        <span class="text-danger">*</span>
+                                    </strong>
+                                </label>
 
-                            <input type="text" id="slug" name="slug" class="form-control"
-                                value="{{ old('slug', $room->slug) }}" placeholder="room-slug" required>
+                                <input type="text" id="slug" name="slug" class="form-control"
+                                    value="{{ old('slug', $room->slug) }}" placeholder="room-slug" required>
 
-                            @error('slug')
-                                <small class="text-danger">
-                                    {{ $message }}
-                                </small>
-                            @enderror
+                                @error('slug')
+                                    <small class="text-danger">
+                                        {{ $message }}
+                                    </small>
+                                @enderror
 
-                        </div>
+                            </div>
+                        @endif
 
 
                         {{-- Description --}}
@@ -133,112 +138,114 @@
             </div>
 
 
-            {{-- =========================================================
-                 ROOM INFORMATION
-            ========================================================== --}}
-            <div class="card shadow mb-4">
+            @if ((int) $type === 2)
+                {{-- =========================================================
+                     ROOM INFORMATION
+                 ========================================================== --}}
+                <div class="card shadow mb-4">
 
-                <div class="card-header py-3">
+                    <div class="card-header py-3">
 
-                    <h6 class="m-0 font-weight-bold text-primary">
-                        Room Information
-                    </h6>
+                        <h6 class="m-0 font-weight-bold text-primary">
+                            Room Information
+                        </h6>
 
-                </div>
-
-
-                <div class="card-body">
-
-                    <div class="row">
-
-                        {{-- Bed --}}
-                        <div class="col-md-3 mb-3">
-
-                            <label for="bed_type">
-                                <strong>
-                                    Bed Type
-                                </strong>
-                            </label>
-
-                            <input type="text" id="bed_type" name="bed_type" class="form-control" placeholder="King Bed"
-                                value="{{ old('bed_type', $room->bed_type) }}">
-
-                            @error('bed_type')
-                                <small class="text-danger">
-                                    {{ $message }}
-                                </small>
-                            @enderror
-
-                        </div>
+                    </div>
 
 
-                        {{-- Guests --}}
-                        <div class="col-md-3 mb-3">
+                    <div class="card-body">
 
-                            <label for="guests">
-                                <strong>
-                                    Guests
-                                </strong>
-                            </label>
+                        <div class="row">
 
-                            <input type="text" id="guests" name="guests" class="form-control" placeholder="3 Adults"
-                                value="{{ old('guests', $room->guests) }}">
+                            {{-- Bed --}}
+                            <div class="col-md-3 mb-3">
 
-                            @error('guests')
-                                <small class="text-danger">
-                                    {{ $message }}
-                                </small>
-                            @enderror
+                                <label for="bed_type">
+                                    <strong>
+                                        Bed Type
+                                    </strong>
+                                </label>
 
-                        </div>
+                                <input type="text" id="bed_type" name="bed_type" class="form-control"
+                                    placeholder="King Bed" value="{{ old('bed_type', $room->bed_type) }}">
 
+                                @error('bed_type')
+                                    <small class="text-danger">
+                                        {{ $message }}
+                                    </small>
+                                @enderror
 
-                        {{-- Size --}}
-                        <div class="col-md-3 mb-3">
-
-                            <label for="size">
-                                <strong>
-                                    Room Size
-                                </strong>
-                            </label>
-
-                            <input type="text" id="size" name="size" class="form-control"
-                                placeholder="350 sq.ft." value="{{ old('size', $room->size) }}">
-
-                            @error('size')
-                                <small class="text-danger">
-                                    {{ $message }}
-                                </small>
-                            @enderror
-
-                        </div>
+                            </div>
 
 
-                        {{-- View --}}
-                        <div class="col-md-3 mb-3">
+                            {{-- Guests --}}
+                            <div class="col-md-3 mb-3">
 
-                            <label for="view">
-                                <strong>
-                                    View
-                                </strong>
-                            </label>
+                                <label for="guests">
+                                    <strong>
+                                        Guests
+                                    </strong>
+                                </label>
 
-                            <input type="text" id="view" name="view" class="form-control"
-                                placeholder="Valley View" value="{{ old('view', $room->view) }}">
+                                <input type="text" id="guests" name="guests" class="form-control"
+                                    placeholder="3 Adults" value="{{ old('guests', $room->guests) }}">
 
-                            @error('view')
-                                <small class="text-danger">
-                                    {{ $message }}
-                                </small>
-                            @enderror
+                                @error('guests')
+                                    <small class="text-danger">
+                                        {{ $message }}
+                                    </small>
+                                @enderror
+
+                            </div>
+
+
+                            {{-- Size --}}
+                            <div class="col-md-3 mb-3">
+
+                                <label for="size">
+                                    <strong>
+                                        Room Size
+                                    </strong>
+                                </label>
+
+                                <input type="text" id="size" name="size" class="form-control"
+                                    placeholder="350 sq.ft." value="{{ old('size', $room->size) }}">
+
+                                @error('size')
+                                    <small class="text-danger">
+                                        {{ $message }}
+                                    </small>
+                                @enderror
+
+                            </div>
+
+
+                            {{-- View --}}
+                            <div class="col-md-3 mb-3">
+
+                                <label for="view">
+                                    <strong>
+                                        View
+                                    </strong>
+                                </label>
+
+                                <input type="text" id="view" name="view" class="form-control"
+                                    placeholder="Valley View" value="{{ old('view', $room->view) }}">
+
+                                @error('view')
+                                    <small class="text-danger">
+                                        {{ $message }}
+                                    </small>
+                                @enderror
+
+                            </div>
 
                         </div>
 
                     </div>
 
                 </div>
-
-            </div>
+            @endif
 
 
             {{-- =========================================================
@@ -318,24 +325,21 @@
 
                         </div>
 
-
-                        {{-- Published --}}
                         <div class="col-md-3 mb-3 d-flex align-items-center">
-
-                            <div class="form-check mt-4">
-
-                                <input type="checkbox" class="form-check-input" id="published" name="published"
-                                    value="1" {{ old('published', $room->published ?? true) ? 'checked' : '' }}>
-
-                                <label class="form-check-label" for="published">
-
-                                    <strong>
-                                        Published
-                                    </strong>
-
+                            <label><strong>Status</strong></label>
+                            <input type="hidden" name="status" value="{{ Status::INACTIVE->value }}">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="status" name="status"
+                                    value="{{ Status::ACTIVE->value }}"
+                                    {{ old('status', $offer->status?->value ?? Status::ACTIVE->value) == Status::ACTIVE->value ? 'checked' : '' }}>
+                                <label class="custom-control-label" for="status">
+                                    <span id="status-text">
+                                        {{ old('status', $offer->status?->value ?? Status::ACTIVE->value) == Status::ACTIVE->value ? 'Active' : 'Inactive' }}
+                                    </span>
                                 </label>
-
                             </div>
+
+
 
                         </div>
 
@@ -355,12 +359,12 @@
 
                     <i class="fa fa-save"></i>
 
-                    {{ $room->id ? 'Update and Continue' : 'Save and Continue' }}
+                    {{ $room->id ? 'Update' : 'Save' }}{{ (int) $type === 2 ? ' and Continue' : '' }}
 
                 </button>
 
 
-                <a href="{{ route('admin.rooms.index') }}" class="btn btn-secondary">
+                <a href="{{ route('admin.rooms.index', $type) }}" class="btn btn-secondary">
 
                     <i class="fa fa-times"></i>
 
@@ -387,12 +391,6 @@
 
 
     <style>
-        /*
-                                        |--------------------------------------------------------------------------
-                                        | Custom File Input
-                                        |--------------------------------------------------------------------------
-                                        */
-
         .custom-file {
             position: relative;
         }
@@ -427,13 +425,6 @@
 
         }
 
-
-        /*
-                                        |--------------------------------------------------------------------------
-                                        | Image Preview
-                                        |--------------------------------------------------------------------------
-                                        */
-
         .custom-file-label .file-preview {
 
             position: absolute;
@@ -459,12 +450,6 @@
         }
 
 
-        /*
-                                        |--------------------------------------------------------------------------
-                                        | Form Labels
-                                        |--------------------------------------------------------------------------
-                                        */
-
         .form-group label,
         .form-control+label {
 
@@ -473,24 +458,12 @@
         }
 
 
-        /*
-                                        |--------------------------------------------------------------------------
-                                        | Card Header
-                                        |--------------------------------------------------------------------------
-                                        */
-
         .card-header {
 
             background-color: #f8f9fc;
 
         }
 
-
-        /*
-                                        |--------------------------------------------------------------------------
-                                        | Checkbox
-                                        |--------------------------------------------------------------------------
-                                        */
 
         .form-check-input {
 
@@ -505,6 +478,14 @@
 
         }
     </style>
+@endpush
+
+@push('script')
+    <script>
+        document.getElementById('status').addEventListener('change', function() {
+            document.getElementById('status-text').textContent = this.checked ? 'Active' : 'Inactive';
+        });
+    </script>
 @endpush
 
 
@@ -674,6 +655,21 @@
             });
 
 
+        });
+    </script>
+
+    <script type="text/javascript">
+        // Add the following code if you want the name of the file appear on select
+        $(".custom-file-input").on("change", function() {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+    </script>
+
+    <script>
+        document.getElementById('status').addEventListener('change', function() {
+            document.getElementById('status-text').textContent =
+                this.checked ? 'Active' : 'Inactive';
         });
     </script>
 @endpush

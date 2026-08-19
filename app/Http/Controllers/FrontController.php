@@ -25,7 +25,6 @@ use App\Models\GalleryIntro;
 use App\Models\Offer;
 use App\Models\OfferIntro;
 use App\Models\Resort;
-use App\Models\ResortIntro;
 use App\Models\Room;
 use App\Models\RoomPage;
 use App\Models\Testimonial;
@@ -72,10 +71,8 @@ class FrontController extends Controller
         $welcome = WelcomeSection::where('status', Status::ACTIVE)
             ->first();
 
-        $resortIntro = ResortIntro::where('status', Status::ACTIVE)
-            ->first();
-
-        $resorts = Resort::where('home_status', Status::ACTIVE)
+        $homeRooms = Room::where('type', 1)
+            ->where('status', Status::ACTIVE->value)
             ->orderBy('sort_order', 'ASC')
             ->get();
 
@@ -130,8 +127,7 @@ class FrontController extends Controller
             'bannerText',
             'banners',
             'welcome',
-            'resortIntro',
-            'resorts',
+            'homeRooms',
             'video',
             'offerIntro',
             'offers',
@@ -269,7 +265,7 @@ class FrontController extends Controller
 
             'phone' => 'required|string|max:255',
 
-            'resort' => 'required|string|max:255',
+            // 'resort' => 'required|string|max:255',
 
             'message' => 'required|string',
 
@@ -285,7 +281,7 @@ class FrontController extends Controller
 
             'phone.required' => 'Please enter your phone number.',
 
-            'resort.required' => 'Please select a resort.',
+            // 'resort.required' => 'Please select a resort.',
 
             'message.required' => 'Please enter your message.',
 
@@ -610,6 +606,7 @@ class FrontController extends Controller
         $roomPage = RoomPage::first();
 
         $rooms = Room::with('galleryImages')
+            ->where('type', 2)
             ->where('status', 'active')
             ->orderBy('sort_order', 'asc')
             ->get();

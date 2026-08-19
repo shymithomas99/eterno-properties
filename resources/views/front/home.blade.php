@@ -50,7 +50,7 @@
     @endif
 
 
-    <!-- Resorts Section -->
+    {{--  <!-- Resorts Section -->
     @if ($resortIntro || $resorts->count())
         <section class="pinned-section section-space-bottom" id="pinnedSection">
             <div class="container pinned-container">
@@ -113,6 +113,65 @@
 
                     </div>
                 @endif
+            </div>
+        </section>
+    @endif  --}}
+
+    <!-- Rooms Section -->
+    @if ($homeRooms->count())
+        <section class="pinned-section section-space-bottom" id="pinnedSection">
+            <div class="container pinned-container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="resort-header">
+                            <span class="section-label">STAY WITH US</span>
+                            <h2 class="section-title">Our Rooms</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row align-items-center g-4 g-lg-5">
+                    <div class="col-lg-4 col-xl-5">
+                        <div class="tab-nav" id="tabNav">
+                            @foreach ($homeRooms as $index => $room)
+                                <button class="tab-nav-btn {{ $index === 0 ? 'active' : '' }}"
+                                    data-index="{{ $index }}">
+                                    {{ $room->name }}
+                                </button>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <div class="col-lg-8 col-xl-7">
+                        <div class="resort-window" id="resortWindow">
+                            <div class="resort-track" id="resortTrack">
+                                @foreach ($homeRooms as $index => $room)
+                                    <div class="resort-item {{ $index === 0 ? 'active' : '' }}"
+                                        data-index="{{ $index }}">
+                                        <div class="property-card">
+                                            <div class="property-card-img-wrapper">
+                                                <img src="{{ asset('uploads/rooms/' . $room->main_image) }}"
+                                                    class="img-fluid" alt="{{ $room->name }}">
+                                                {{--  <div class="property-overlay">
+                                                    <a href="{{ route('booking-form', ['resort' => $room->slug]) }}"
+                                                        class="btn-explore">Book Now</a>
+                                                </div>  --}}
+                                            </div>
+                                        </div>
+                                        <div class="panel-description">
+                                            <h5>{{ $room->name }}</h5>
+                                            <p>{{ $room->description }}</p>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="text-center mt-5">
+                <a href="{{ route('rooms') }}" class="btn-custom btn-outline-custom">Find More Rooms</a>
             </div>
         </section>
     @endif

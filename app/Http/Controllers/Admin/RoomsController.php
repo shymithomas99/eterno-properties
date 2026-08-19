@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\Status;
 use App\Http\Controllers\Controller;
 use App\Models\Room;
 use App\Models\RoomGallery;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -13,78 +15,47 @@ class RoomsController extends Controller
     /**
      * Display rooms.
      */
-    public function index()
+    public function index($type)
     {
-        $rooms = Room::orderBy('sort_order')
+        $rooms = Room::where('type', $type)
+            ->orderBy('sort_order')
             ->orderBy('id', 'desc')
             ->paginate(20);
 
-        return view('admin.rooms.index', compact('rooms'));
+        return view('admin.rooms.index', compact('rooms', 'type'));
     }
 
     /**
      * Create room.
      */
-    public function create()
+    public function create($type)
     {
         $room = new Room();
 
-        return view('admin.rooms.form', compact('room'));
+        return view('admin.rooms.form', compact('room', 'type'));
     }
 
     /**
      * Store room.
      */
-    public function store(Request $request)
+    public function store(Request $request, $type)
     {
-        $request->validate([
+        $rules = [
             'name' => [
                 'required',
                 'string',
                 'max:255',
             ],
-
-            'slug' => [
-                'required',
-                'string',
-                'alpha_dash',
-                'unique:rooms,slug',
-            ],
-
             'description' => [
                 'nullable',
                 'string',
-            ],
-
-            'bed_type' => [
-                'nullable',
-                'string',
-                'max:255',
-            ],
-
-            'guests' => [
-                'nullable',
-                'string',
-                'max:255',
-            ],
-
-            'size' => [
-                'nullable',
-                'string',
-                'max:255',
-            ],
-
-            'view' => [
-                'nullable',
-                'string',
-                'max:255',
             ],
 
             'main_image' => [
                 'nullable',
                 'image',
                 'mimes:jpg,jpeg,png,webp',
-                'max:100',
+                'max:200',
                 'dimensions:width=850,height=630',
             ],
 
@@ -93,7 +64,17 @@ class RoomsController extends Controller
                 'integer',
                 'min:0',
             ],
-        ]);
+            'status' => ['required', Rule::in(['active', 'inactive'])],
+        ];
+
+        if ((int) $type === 2) {
+            $rules['slug'] = ['required', 'string', 'alpha_dash', 'unique:rooms,slug'];
+            foreach (['bed_type', 'guests', 'size', 'view'] as $field) {
+                $rules[$field] = ['nullable', 'string', 'max:255'];
+            }
+        }
+
+        $validated = $request->validate($rules);
 
         $fileName = null;
 
@@ -111,57 +92,55 @@ class RoomsController extends Controller
         }
 
         $room = Room::create([
+            'type' => $type,
             'name' => $request->name,
-            'slug' => $request->slug,
+            'slug' => $type == 1 ? $this->uniqueSlug($request->name) : $request->slug,
             'description' => $request->description,
-            'bed_type' => $request->bed_type,
-            'guests' => $request->guests,
-            'size' => $request->size,
-            'view' => $request->view,
+            'bed_type' => $type == 2 ? $request->bed_type : null,
+            'guests' => $type == 2 ? $request->guests : null,
+            'size' => $type == 2 ? $request->size : null,
+            'view' => $type == 2 ? $request->view : null,
             'main_image' => $fileName,
-            'published' => $request->boolean('published'),
+            'status' => $validated['status'],
             'sort_order' => $request->sort_order ?? 0,
         ]);
 
+        if ((int) $type === 1) {
+            return redirect()->route('admin.rooms.index', $type)
+                ->with('success', 'Home room added successfully');
+        }
+
         return redirect()
-            ->route('admin.rooms.gallery-images-form', $room->id)
+            ->route('admin.rooms.gallery-images-form', ['type' => $type, 'id' => $room->id])
             ->with('success', 'Room added successfully');
     }
 
     /**
      * Display room.
      */
-    public function show(Room $room)
+    public function show($type, Room $room)
     {
-        return view('admin.rooms.show', compact('room'));
+        return view('admin.rooms.show', compact('room', 'type'));
     }
 
     /**
      * Edit room.
      */
-    public function edit(Room $room)
+    public function edit($type, Room $room)
     {
-        return view('admin.rooms.form', compact('room'));
+        return view('admin.rooms.form', compact('room', 'type'));
     }
 
     /**
      * Update room.
      */
-    public function update(Request $request, Room $room)
+    public function update(Request $request, $type, Room $room)
     {
-        $request->validate([
+        $rules = [
             'name' => [
                 'required',
                 'string',
                 'max:255',
-            ],
-
-            'slug' => [
-                'required',
-                'string',
-                'alpha_dash',
-                Rule::unique('rooms', 'slug')
-                    ->ignore($room->id),
             ],
 
             'description' => [
@@ -169,35 +148,11 @@ class RoomsController extends Controller
                 'string',
             ],
 
-            'bed_type' => [
-                'nullable',
-                'string',
-                'max:255',
-            ],
-
-            'guests' => [
-                'nullable',
-                'string',
-                'max:255',
-            ],
-
-            'size' => [
-                'nullable',
-                'string',
-                'max:255',
-            ],
-
-            'view' => [
-                'nullable',
-                'string',
-                'max:255',
-            ],
-
             'main_image' => [
                 'nullable',
                 'image',
                 'mimes:jpg,jpeg,png,webp',
-                'max:100',
+                'max:200',
                 'dimensions:width=850,height=630',
             ],
 
@@ -206,7 +161,22 @@ class RoomsController extends Controller
                 'integer',
                 'min:0',
             ],
-        ]);
+            'status' => ['required', Rule::in(['active', 'inactive'])],
+        ];
+
+        if ((int) $type === 2) {
+            $rules['slug'] = [
+                'required',
+                'string',
+                'alpha_dash',
+                Rule::unique('rooms', 'slug')->ignore($room->id),
+            ];
+            foreach (['bed_type', 'guests', 'size', 'view'] as $field) {
+                $rules[$field] = ['nullable', 'string', 'max:255'];
+            }
+        }
+
+        $validated = $request->validate($rules);
 
         $fileName = $room->main_image;
 
@@ -242,26 +212,31 @@ class RoomsController extends Controller
 
         $room->update([
             'name' => $request->name,
-            'slug' => $request->slug,
+            'slug' => $type == 1 ? $this->uniqueSlug($request->name, $room->id) : $request->slug,
             'description' => $request->description,
-            'bed_type' => $request->bed_type,
-            'guests' => $request->guests,
-            'size' => $request->size,
-            'view' => $request->view,
+            'bed_type' => $type == 2 ? $request->bed_type : null,
+            'guests' => $type == 2 ? $request->guests : null,
+            'size' => $type == 2 ? $request->size : null,
+            'view' => $type == 2 ? $request->view : null,
             'main_image' => $fileName,
-            'published' => $request->boolean('published'),
+            'status' => $validated['status'],
             'sort_order' => $request->sort_order ?? 0,
         ]);
 
+        if ((int) $type === 1) {
+            return redirect()->route('admin.rooms.index', $type)
+                ->with('success', 'Home room updated successfully');
+        }
+
         return redirect()
-            ->route('admin.rooms.gallery-images-form', $room->id)
+            ->route('admin.rooms.gallery-images-form', ['type' => $type, 'id' => $room->id])
             ->with('success', 'Room updated successfully');
     }
 
     /**
      * Delete room.
      */
-    public function destroy(Room $room)
+    public function destroy($type, Room $room)
     {
         if (
             $room->main_image &&
@@ -295,22 +270,38 @@ class RoomsController extends Controller
         $room->delete();
 
         return redirect()
-            ->route('admin.rooms.index')
+            ->route('admin.rooms.index', $type)
             ->with('success', 'Room deleted successfully');
+    }
+
+    private function uniqueSlug(string $name, ?int $ignoreId = null): string
+    {
+        $slug = Str::slug($name) ?: 'room';
+        $candidate = $slug;
+        $suffix = 2;
+
+        while (Room::where('slug', $candidate)
+            ->when($ignoreId, fn($query) => $query->where('id', '!=', $ignoreId))
+            ->exists()
+        ) {
+            $candidate = $slug . '-' . $suffix++;
+        }
+
+        return $candidate;
     }
 
     /**
      * Toggle publish.
      */
-    public function togglePublish($id)
+    public function togglePublish($type, $id)
     {
         $room = Room::findOrFail($id);
 
         $room->update([
-            'published' => !$room->published,
+            'status' => $room->status === Status::ACTIVE ? Status::INACTIVE : Status::ACTIVE,
         ]);
 
-        $message = $room->published
+        $message = $room->status === Status::ACTIVE
             ? 'Room published successfully'
             : 'Room moved to draft';
 
@@ -320,21 +311,25 @@ class RoomsController extends Controller
     /**
      * Gallery form.
      */
-    public function galleryImagesForm($id)
+    public function galleryImagesForm($type, $id)
     {
+        abort_if((int) $type === 1, 404);
+
         $room = Room::findOrFail($id);
 
         return view(
             'admin.rooms.gallery-images-form',
-            compact('room')
+            compact('room', 'type')
         );
     }
 
     /**
      * Upload gallery image.
      */
-    public function uploadImage(Request $request)
+    public function uploadImage(Request $request, $type)
     {
+        abort_if((int) $type === 1, 404);
+
         // $request->validate([
         //     'file' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
         // ]);
@@ -375,8 +370,10 @@ class RoomsController extends Controller
     /**
      * Delete gallery image.
      */
-    public function deleteImage(Request $request)
+    public function deleteImage(Request $request, $type)
     {
+        abort_if((int) $type === 1, 404);
+
         $gallery = RoomGallery::findOrFail($request->id);
 
         $path = public_path(

@@ -12,9 +12,9 @@
                 Amenity Categories
             </h1>
 
-            <a href="{{ route('admin.amenity-categories.create') }}" class="btn btn-primary btn-sm shadow-sm">
+            <a href="{{ route('admin.amenity-categories.create') }}" class="btn btn-primary">
                 <i class="fas fa-plus fa-sm text-white-50"></i>
-                Add Category
+                Add
             </a>
 
         </div>
@@ -119,13 +119,13 @@
 
                                     <td>
 
-                                        <a href="{{ route('admin.amenity-categories.edit', $category) }}"
-                                            class="btn btn-sm btn-info" title="Edit">
+                                        <a href="{{ route('admin.amenity-categories.edit', $category) }}" class="btn btn-sm"
+                                            title="Edit">
                                             <i class="fas fa-edit"></i>
                                         </a>
 
 
-                                        <form action="{{ route('admin.amenity-categories.toggle-status', $category) }}"
+                                        {{--  <form action="{{ route('admin.amenity-categories.toggle-status', $category) }}"
                                             method="POST" class="d-inline">
 
                                             @csrf
@@ -138,7 +138,7 @@
 
                                             </button>
 
-                                        </form>
+                                        </form>  --}}
 
 
                                         <form action="{{ route('admin.amenity-categories.destroy', $category) }}"
@@ -148,7 +148,7 @@
                                             @csrf
                                             @method('DELETE')
 
-                                            <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+                                            <button type="submit" class="btn btn-sm" title="Delete">
                                                 <i class="fas fa-trash"></i>
                                             </button>
 

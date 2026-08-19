@@ -90,7 +90,8 @@
                     request()->is('admin/gallery-intro/1*') ||
                     request()->is('admin/gallery/1*') ||
                     request()->is('admin/testimonial-intro*') ||
-                    request()->is('admin/testimonials*');
+                    request()->is('admin/testimonials*') ||
+                    request()->is('admin/rooms/1*');
             @endphp
 
             <li class="nav-item {{ $homeMenuOpen ? 'active' : '' }}">
@@ -137,6 +138,11 @@
                         <a class="collapse-item {{ request()->is('admin/welcome-section*') ? 'active' : '' }}"
                             href="{{ route('admin.welcome-section.edit') }}">
                             Welcome
+                        </a>
+
+                        <a class="collapse-item {{ request()->is('admin/rooms/1*') ? 'active' : '' }}"
+                            href="{{ route('admin.rooms.index', 1) }}">
+                            Home Rooms
                         </a>
 
                         @php
@@ -386,8 +392,8 @@
 
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item {{ request()->is('admin/rooms*') ? 'active' : '' }}"
-                            href="{{ route('admin.rooms.index') }}">
-                            Rooms
+                            href="{{ route('admin.rooms.index', 2) }}">
+                            Rooms Page
                         </a>
 
                     </div>
@@ -447,8 +453,8 @@
 
                         {{-- Rooms --}}
                         <a class="collapse-item
-                {{ request()->is('admin/rooms*') ? 'active' : '' }}"
-                            href="{{ route('admin.rooms.index') }}">
+                {{ request()->is('admin/rooms/2*') ? 'active' : '' }}"
+                            href="{{ route('admin.rooms.index', 2) }}">
 
                             Rooms
 

@@ -99,7 +99,7 @@
 
 
                                 <!-- Resort -->
-                                <div class="form-group">
+                                {{--  <div class="form-group">
                                     <select name="resort" class="form-control-custom">
                                         <option value="" disabled {{ old('resort') ? '' : 'selected' }}>
                                             Interested Resort
@@ -114,7 +114,7 @@
                                     </select>
 
                                     <div class="field-error" data-error-for="resort"></div>
-                                </div>
+                                </div>  --}}
 
 
                                 <!-- Message -->
@@ -124,15 +124,6 @@
                                     <div class="field-error" data-error-for="message"></div>
                                 </div>
 
-
-                                {{--  <!-- Submit -->
-                                <button type="submit" id="submitBtn" class="btn btn-primary-custom btn-custom w-100">
-                                    <span id="submitText">Send Your Message</span>
-
-                                    <span id="submitLoader" style="display: none;">
-                                        Sending...
-                                    </span>
-                                </button>  --}}
 
                                 {{-- reCAPTCHA v3 token --}}
                                 <input type="hidden" name="recaptcha_token" id="recaptcha_token">

@@ -225,7 +225,8 @@ Route::middleware('auth')->group(function () {
         ->name('newsletters.destroy');
 
 
-    Route::prefix('rooms')
+    Route::prefix('rooms/{type}')
+        ->where(['type' => '1|2'])
         ->group(function () {
 
             Route::get('/', [RoomsController::class, 'index'])

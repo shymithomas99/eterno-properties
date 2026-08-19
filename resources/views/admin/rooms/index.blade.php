@@ -12,7 +12,7 @@
                 Rooms
             </h1>
 
-            <a href="{{ route('admin.rooms.create') }}" class="btn btn-primary btn-sm shadow-sm">
+            <a href="{{ route('admin.rooms.create', $type) }}" class="btn btn-primary">
 
                 <i class="fas fa-plus fa-sm text-white-50"></i>
                 Add Room
@@ -69,9 +69,11 @@
                                     Room Name
                                 </th>
 
-                                <th>
-                                    Slug
-                                </th>
+                                @if ((int) $type === 2)
+                                    <th>Slug</th>
+                                @endif
+
+                                <th>Status</th>
 
                                 <th width="220">
                                     Actions
@@ -113,31 +115,46 @@
                                         </strong>
                                     </td>
 
-                                    <td>
-                                        {{ $room->slug }}
+                                    @if ((int) $type === 2)
+                                        <td>{{ $room->slug }}</td>
+                                    @endif
 
+                                    <td>
+                                        <span
+                                            class="badge badge-{{ $room->status === \App\Enums\Status::ACTIVE ? 'success' : 'danger' }}">
+                                            {{ $room->status->label() }}
+                                        </span>
                                     </td>
 
                                     <td>
+                                        {{-- VIEW --}}
+                                        <a href="{{ route('admin.rooms.show', ['type' => $type, 'room' => $room]) }}"
+                                            class="btn btn-sm" title="View">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+
                                         {{-- EDIT --}}
-                                        <a href="{{ route('admin.rooms.edit', $room) }}" class="btn btn-sm btn-info"
-                                            title="Edit">
+                                        <a href="{{ route('admin.rooms.edit', ['type' => $type, 'room' => $room]) }}"
+                                            class="btn btn-sm" title="Edit">
                                             <i class="fas fa-edit"></i>
                                         </a>
 
-                                        {{-- GALLERY --}}
-                                        <a href="{{ route('admin.rooms.gallery-images-form', $room->id) }}"
-                                            class="btn btn-sm btn-primary" title="Gallery">
-                                            <i class="fas fa-images"></i>
-                                        </a>
+                                        @if ((int) $type === 2)
+                                            {{-- GALLERY --}}
+                                            <a href="{{ route('admin.rooms.gallery-images-form', ['type' => $type, 'id' => $room->id]) }}"
+                                                class="btn btn-sm" title="Gallery">
+                                                <i class="fas fa-images"></i>
+                                            </a>
+                                        @endif
 
                                         {{-- DELETE --}}
-                                        <form action="{{ route('admin.rooms.destroy', $room) }}" method="POST"
-                                            class="d-inline"
+                                        <form
+                                            action="{{ route('admin.rooms.destroy', ['type' => $type, 'room' => $room]) }}"
+                                            method="POST" class="d-inline"
                                             onsubmit="return confirm('Are you sure you want to delete this room?');">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+                                            <button type="submit" class="btn btn-sm" title="Delete">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
@@ -145,7 +162,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center">
+                                    <td colspan="{{ (int) $type === 2 ? 6 : 5 }}" class="text-center">
                                         No rooms found.
                                     </td>
                                 </tr>

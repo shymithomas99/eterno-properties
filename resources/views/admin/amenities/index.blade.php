@@ -13,11 +13,11 @@
                 Amenities
             </h1>
 
-            <a href="{{ route('admin.amenities.create') }}" class="btn btn-primary btn-sm shadow-sm">
+            <a href="{{ route('admin.amenities.create') }}" class="btn btn-primary">
 
                 <i class="fas fa-plus fa-sm text-white-50"></i>
 
-                Add Amenity
+                Add
 
             </a>
 
@@ -127,7 +127,7 @@
                                     <td>
 
                                         {{-- EDIT ALL AMENITIES --}}
-                                        <a href="{{ route('admin.amenities.edit', $category) }}" class="btn btn-sm btn-info"
+                                        <a href="{{ route('admin.amenities.edit', $category) }}" class="btn btn-sm"
                                             title="Edit Amenities">
 
                                             <i class="fas fa-edit"></i>
@@ -145,8 +145,7 @@
 
                                                 @method('DELETE')
 
-                                                <button type="submit" class="btn btn-sm btn-danger"
-                                                    title="Delete All Amenities">
+                                                <button type="submit" class="btn btn-sm" title="Delete All Amenities">
 
                                                     <i class="fas fa-trash"></i>
 

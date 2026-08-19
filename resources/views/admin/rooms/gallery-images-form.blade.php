@@ -32,7 +32,7 @@
 
                     <div class="col-12">
 
-                        <a href="{{ route('admin.rooms.index') }}" class="btn btn-primary">
+                        <a href="{{ route('admin.rooms.index', $type) }}" class="btn btn-primary">
                             Done
                         </a>
 
@@ -102,12 +102,12 @@
                 /*
                 Delete existing/new image
                 */
-                deleteUrl: "{{ route('admin.rooms.delete-image') }}",
+                deleteUrl: "{{ route('admin.rooms.delete-image', $type) }}",
 
                 /*
                 Upload image
                 */
-                uploadUrl: "{{ route('admin.rooms.upload-image') }}",
+                uploadUrl: "{{ route('admin.rooms.upload-image', $type) }}",
 
                 /*
                 Room ID
