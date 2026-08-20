@@ -189,11 +189,11 @@
         <div class="footer-bottom">
             <p>
                 ©2026. All rights reserved. Kavumkal Dream Destination Pvt. Ltd.
-                <span class="footer-divider">|</span>
+                {{--  <span class="footer-divider">|</span>
                 Designed By
                 <a href="https://camstech.com/" class="color-primary text-decoration-none" target="_blank">
                     CAMS
-                </a>
+                </a>  --}}
             </p>
 
             <div class="footer-legal">
