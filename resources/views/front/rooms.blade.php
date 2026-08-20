@@ -54,7 +54,7 @@
 
     </section>
 
-    <section class="section-space">
+    <section class="section-space pb-200">
         <div class="container">
             <!-- ROOMS LISTING -->
             <div class="room-list">

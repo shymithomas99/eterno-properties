@@ -41,10 +41,10 @@
                                     {{ $offer->button_text }}
                                 </a>  --}}
 
-                                <a href="javascript:void(0);" class="btn-custom btn-outline-custom" data-bs-toggle="modal"
+                                {{--  <a href="javascript:void(0);" class="btn-custom btn-outline-custom" data-bs-toggle="modal"
                                     data-bs-target="#offerModal{{ $offer->id }}">
                                     {{ $offer->button_text }}
-                                </a>
+                                </a>  --}}
                             </div>
                         </div>
 

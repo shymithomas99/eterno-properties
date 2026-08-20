@@ -10,10 +10,10 @@
             url('{{ $experiencepage?->banner_image ? asset($experiencepage->banner_image) : asset('images/contact-hero-bg.jpg') }}')
             center/cover no-repeat;">
         <div class="hero-inner-content px-2 reveal">
-            <h1>{{ $experiencepage->banner_title }}</h1>
+            <h1>{{ $experiencepage->banner_title ?? '' }}</h1>
 
             <p>
-                {{ $experiencepage->banner_description }}
+                {{ $experiencepage->banner_description ?? '' }}
             </p>
         </div>
 
@@ -29,11 +29,11 @@
         <div class="container text-center reveal">
 
             <div class="section-label mb-4">
-                {{ $experiencepage->intro_subtitle }}
+                {{ $experiencepage->intro_subtitle ?? '' }}
             </div>
 
             <h3 class="subhead-v2">
-                {{ $experiencepage->intro_description }}
+                {{ $experiencepage->intro_description ?? '' }}
             </h3>
 
         </div>
@@ -64,15 +64,15 @@
                         <div class="exp-card">
 
                             <div class="section-label mb-4">
-                                {{ $experience->subtitle }}
+                                {{ $experience->subtitle ?? '' }}
                             </div>
 
                             <h3 class="mb-3">
-                                {{ $experience->title }}
+                                {{ $experience->title ?? '' }}
                             </h3>
 
                             <p class="subhead mb-4 mb-md-5">
-                                {{ $experience->description }}
+                                {{ $experience->description ?? '' }}
                             </p>
 
                             @if (!empty($experience->experience_list))

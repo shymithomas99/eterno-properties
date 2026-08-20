@@ -22,7 +22,7 @@
     </section>
 
     <!-- Booking Enquiry Form Section -->
-    <section class="booking-section">
+    <section class="booking-section pb-200">
         <div class="container">
             <div class="booking-wrapper">
                 <div class="row g-0">
