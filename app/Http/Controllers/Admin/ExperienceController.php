@@ -135,13 +135,13 @@ class ExperienceController extends Controller
 
                 Rule::when(
                     (int) $type === 2,
-                    ['required']
+                    ['nullable']
                 ),
             ],
 
             'title' => 'required|max:255',
 
-            'description' => 'required',
+            'description' => 'nullable',
 
             // 'experience_list' => 'nullable',
             'experience_list' => [
@@ -149,7 +149,7 @@ class ExperienceController extends Controller
 
                 Rule::when(
                     (int) $type === 2,
-                    ['required']
+                    ['nullable']
                 ),
             ],
 
@@ -245,20 +245,20 @@ class ExperienceController extends Controller
 
                 Rule::when(
                     (int) $type === 2,
-                    ['required']
+                    ['nullable']
                 ),
             ],
 
             'title' => 'required|max:255',
 
-            'description' => 'required',
+            'description' => 'nullable',
 
             'experience_list' => [
 
 
                 Rule::when(
                     (int) $type === 2,
-                    ['required']
+                    ['nullable']
                 ),
             ],
 

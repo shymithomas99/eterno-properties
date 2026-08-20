@@ -46,6 +46,7 @@ class RoomsController extends Controller
                 'string',
                 'max:255',
             ],
+
             'description' => [
                 'nullable',
                 'string',
@@ -64,17 +65,49 @@ class RoomsController extends Controller
                 'integer',
                 'min:0',
             ],
-            'status' => ['required', Rule::in(['active', 'inactive'])],
+
+            'status' => [
+                'required',
+                Rule::in(['active', 'inactive']),
+            ],
         ];
 
+        /*
+        |--------------------------------------------------------------------------
+        | Type 2 Validation
+        |--------------------------------------------------------------------------
+        |
+        | Slug must be unique only within the same type.
+        |
+        */
         if ((int) $type === 2) {
-            $rules['slug'] = ['required', 'string', 'alpha_dash', 'unique:rooms,slug'];
+
+            $rules['slug'] = [
+                'required',
+                'string',
+                'alpha_dash',
+                Rule::unique('rooms', 'slug')
+                    ->where(function ($query) use ($type) {
+                        return $query->where('type', $type);
+                    }),
+            ];
+
             foreach (['bed_type', 'guests', 'size', 'view'] as $field) {
-                $rules[$field] = ['nullable', 'string', 'max:255'];
+                $rules[$field] = [
+                    'nullable',
+                    'string',
+                    'max:255',
+                ];
             }
         }
 
         $validated = $request->validate($rules);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Upload Main Image
+        |--------------------------------------------------------------------------
+        */
 
         $fileName = null;
 
@@ -91,27 +124,71 @@ class RoomsController extends Controller
             );
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | Create Room
+        |--------------------------------------------------------------------------
+        */
+
         $room = Room::create([
             'type' => $type,
+
             'name' => $request->name,
-            'slug' => $type == 1 ? $this->uniqueSlug($request->name) : $request->slug,
+
+            /*
+            | Type 1:
+            | Generate slug automatically.
+            |
+            | Type 2:
+            | Use the slug entered by the user.
+            */
+            'slug' => $type == 1
+                ? $this->uniqueSlug($request->name, $type)
+                : $request->slug,
+
             'description' => $request->description,
-            'bed_type' => $type == 2 ? $request->bed_type : null,
-            'guests' => $type == 2 ? $request->guests : null,
-            'size' => $type == 2 ? $request->size : null,
-            'view' => $type == 2 ? $request->view : null,
+
+            'bed_type' => $type == 2
+                ? $request->bed_type
+                : null,
+
+            'guests' => $type == 2
+                ? $request->guests
+                : null,
+
+            'size' => $type == 2
+                ? $request->size
+                : null,
+
+            'view' => $type == 2
+                ? $request->view
+                : null,
+
             'main_image' => $fileName,
+
             'status' => $validated['status'],
+
             'sort_order' => $request->sort_order ?? 0,
         ]);
 
+        /*
+        |--------------------------------------------------------------------------
+        | Redirect
+        |--------------------------------------------------------------------------
+        */
+
         if ((int) $type === 1) {
-            return redirect()->route('admin.rooms.index', $type)
+
+            return redirect()
+                ->route('admin.rooms.index', $type)
                 ->with('success', 'Home room added successfully');
         }
 
         return redirect()
-            ->route('admin.rooms.gallery-images-form', ['type' => $type, 'id' => $room->id])
+            ->route('admin.rooms.gallery-images-form', [
+                'type' => $type,
+                'id' => $room->id,
+            ])
             ->with('success', 'Room added successfully');
     }
 
@@ -161,24 +238,60 @@ class RoomsController extends Controller
                 'integer',
                 'min:0',
             ],
-            'status' => ['required', Rule::in(['active', 'inactive'])],
+
+            'status' => [
+                'required',
+                Rule::in(['active', 'inactive']),
+            ],
         ];
 
+        /*
+        |--------------------------------------------------------------------------
+        | Type 2 Validation
+        |--------------------------------------------------------------------------
+        |
+        | Slug is unique only for the current type.
+        | The current room is ignored while updating.
+        |
+        */
         if ((int) $type === 2) {
+
             $rules['slug'] = [
                 'required',
                 'string',
                 'alpha_dash',
-                Rule::unique('rooms', 'slug')->ignore($room->id),
+
+                Rule::unique('rooms', 'slug')
+                    ->where(function ($query) use ($type) {
+                        return $query->where('type', $type);
+                    })
+                    ->ignore($room->id),
             ];
+
             foreach (['bed_type', 'guests', 'size', 'view'] as $field) {
-                $rules[$field] = ['nullable', 'string', 'max:255'];
+                $rules[$field] = [
+                    'nullable',
+                    'string',
+                    'max:255',
+                ];
             }
         }
 
         $validated = $request->validate($rules);
 
+        /*
+        |--------------------------------------------------------------------------
+        | Existing Main Image
+        |--------------------------------------------------------------------------
+        */
+
         $fileName = $room->main_image;
+
+        /*
+        |--------------------------------------------------------------------------
+        | Upload New Main Image
+        |--------------------------------------------------------------------------
+        */
 
         if ($request->hasFile('main_image')) {
 
@@ -192,44 +305,95 @@ class RoomsController extends Controller
                 $fileName
             );
 
+            /*
+            |--------------------------------------------------------------------------
+            | Delete Old Image
+            |--------------------------------------------------------------------------
+            */
+
             if (
                 $room->main_image &&
                 file_exists(
                     public_path(
-                        'uploads/rooms/' .
-                            $room->main_image
+                        'uploads/rooms/' . $room->main_image
                     )
                 )
             ) {
                 unlink(
                     public_path(
-                        'uploads/rooms/' .
-                            $room->main_image
+                        'uploads/rooms/' . $room->main_image
                     )
                 );
             }
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | Update Room
+        |--------------------------------------------------------------------------
+        */
+
         $room->update([
             'name' => $request->name,
-            'slug' => $type == 1 ? $this->uniqueSlug($request->name, $room->id) : $request->slug,
+
+            /*
+            | Type 1:
+            | Automatically generate a slug based on type.
+            |
+            | Type 2:
+            | Use the submitted slug.
+            */
+            'slug' => $type == 1
+                ? $this->uniqueSlug(
+                    $request->name,
+                    $type,
+                    $room->id
+                )
+                : $request->slug,
+
             'description' => $request->description,
-            'bed_type' => $type == 2 ? $request->bed_type : null,
-            'guests' => $type == 2 ? $request->guests : null,
-            'size' => $type == 2 ? $request->size : null,
-            'view' => $type == 2 ? $request->view : null,
+
+            'bed_type' => $type == 2
+                ? $request->bed_type
+                : null,
+
+            'guests' => $type == 2
+                ? $request->guests
+                : null,
+
+            'size' => $type == 2
+                ? $request->size
+                : null,
+
+            'view' => $type == 2
+                ? $request->view
+                : null,
+
             'main_image' => $fileName,
+
             'status' => $validated['status'],
+
             'sort_order' => $request->sort_order ?? 0,
         ]);
 
+        /*
+        |--------------------------------------------------------------------------
+        | Redirect
+        |--------------------------------------------------------------------------
+        */
+
         if ((int) $type === 1) {
-            return redirect()->route('admin.rooms.index', $type)
+
+            return redirect()
+                ->route('admin.rooms.index', $type)
                 ->with('success', 'Home room updated successfully');
         }
 
         return redirect()
-            ->route('admin.rooms.gallery-images-form', ['type' => $type, 'id' => $room->id])
+            ->route('admin.rooms.gallery-images-form', [
+                'type' => $type,
+                'id' => $room->id,
+            ])
             ->with('success', 'Room updated successfully');
     }
 
@@ -238,22 +402,32 @@ class RoomsController extends Controller
      */
     public function destroy($type, Room $room)
     {
+        /*
+        |--------------------------------------------------------------------------
+        | Delete Main Image
+        |--------------------------------------------------------------------------
+        */
+
         if (
             $room->main_image &&
             file_exists(
                 public_path(
-                    'uploads/rooms/' .
-                        $room->main_image
+                    'uploads/rooms/' . $room->main_image
                 )
             )
         ) {
             unlink(
                 public_path(
-                    'uploads/rooms/' .
-                        $room->main_image
+                    'uploads/rooms/' . $room->main_image
                 )
             );
         }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Delete Gallery Images
+        |--------------------------------------------------------------------------
+        */
 
         foreach ($room->galleryImages as $gallery) {
 
@@ -267,6 +441,12 @@ class RoomsController extends Controller
             }
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | Delete Room
+        |--------------------------------------------------------------------------
+        */
+
         $room->delete();
 
         return redirect()
@@ -274,14 +454,45 @@ class RoomsController extends Controller
             ->with('success', 'Room deleted successfully');
     }
 
-    private function uniqueSlug(string $name, ?int $ignoreId = null): string
-    {
+    /**
+     * Generate unique slug based on type.
+     *
+     * Example:
+     *
+     * Type 1:
+     * deluxe-room
+     *
+     * Type 2:
+     * deluxe-room
+     *
+     * Type 1 duplicate:
+     * deluxe-room-2
+     *
+     * Type 2 duplicate:
+     * deluxe-room-2
+     */
+    private function uniqueSlug(
+        string $name,
+        int $type,
+        ?int $ignoreId = null
+    ): string {
         $slug = Str::slug($name) ?: 'room';
+
         $candidate = $slug;
+
         $suffix = 2;
 
-        while (Room::where('slug', $candidate)
-            ->when($ignoreId, fn($query) => $query->where('id', '!=', $ignoreId))
+        while (
+            Room::where('slug', $candidate)
+            ->where('type', $type)
+            ->when(
+                $ignoreId,
+                fn($query) => $query->where(
+                    'id',
+                    '!=',
+                    $ignoreId
+                )
+            )
             ->exists()
         ) {
             $candidate = $slug . '-' . $suffix++;
@@ -298,7 +509,9 @@ class RoomsController extends Controller
         $room = Room::findOrFail($id);
 
         $room->update([
-            'status' => $room->status === Status::ACTIVE ? Status::INACTIVE : Status::ACTIVE,
+            'status' => $room->status === Status::ACTIVE
+                ? Status::INACTIVE
+                : Status::ACTIVE,
         ]);
 
         $message = $room->status === Status::ACTIVE
@@ -329,10 +542,6 @@ class RoomsController extends Controller
     public function uploadImage(Request $request, $type)
     {
         abort_if((int) $type === 1, 404);
-
-        // $request->validate([
-        //     'file' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
-        // ]);
 
         $request->validate([
             'file' => [

@@ -153,7 +153,7 @@
                                 @endif
                             </ul>
 
-                            {{--  <div class="footer-follow">
+                            <div class="footer-follow">
                                 <span>Follow Us</span>
 
                                 <div class="footer-social">
@@ -179,7 +179,7 @@
                                             aria-label="Facebook"> <i class="bi bi-facebook"></i> </a>
                                     @endif
                                 </div>
-                            </div>  --}}
+                            </div>
                         @endif
                     </div>
                 </div>
