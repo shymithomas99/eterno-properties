@@ -26,12 +26,13 @@
     <!-- ========== INTRO SECTION ========== -->
     <section class="intro-section">
         <div class="intro-image reveal-left">
-            <img src="{{ $aboutpage->intro_image ? asset($aboutpage->intro_image) : asset('images/about-intro.jpg') }}"
+
+            <img src="{{ !empty($aboutpage?->intro_image) ? asset($aboutpage->intro_image) : asset('images/about-intro.jpg') }}"
                 alt="Eterno resort nestled in lush greenery" class="img-fluid">
         </div>
         <div class="intro-text reveal-right">
-            <h2>{{ $aboutpage->intro_title }}</h2>
-            <p>{!! $aboutpage->intro_description !!}</p>
+            <h2>{{ $aboutpage->intro_title ?? '' }}</h2>
+            <p>{!! $aboutpage->intro_description ?? '' !!}</p>
         </div>
     </section>
 
@@ -52,9 +53,9 @@
                         </div>
                     </div>
 
-                    <h4>{{ $philosophy->title }}</h4>
+                    <h4>{{ $philosophy->title ?? '' }}</h4>
 
-                    <p>{{ $philosophy->description }}</p>
+                    <p>{{ $philosophy->description ?? '' }}</p>
 
                 </div>
             @endforeach
@@ -78,13 +79,13 @@
                     <div class="accordion-item {{ $key === 0 ? 'active' : '' }}">
 
                         <button type="button" class="accordion-header">
-                            <h4>{{ $value->title }}</h4>
+                            <h4>{{ $value->title ?? '' }}</h4>
 
                             <span class="accordion-toggle-icon"></span>
                         </button>
 
                         <div class="accordion-body">
-                            <p>{{ $value->description }}</p>
+                            <p>{{ $value->description ?? '' }}</p>
                         </div>
 
                     </div>
@@ -114,7 +115,7 @@
     ">
 
         <div class="cta-content reveal">
-            <h2>{{ $aboutpage->cta_title }}</h2>
+            <h2>{{ $aboutpage->cta_title ?? '' }}</h2>
 
             <div class="cta-divider">
                 <svg viewBox="0 0 200 30" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -129,12 +130,12 @@
                 </svg>
             </div>
 
-            <p class="desc">{{ $aboutpage->cta_description }}</p>
+            <p class="desc">{{ $aboutpage->cta_description ?? '' }}</p>
 
             <p class="tagline">Discover a place that feels like yours</p>
 
-            <a href="{{ $aboutpage->cta_button_link }}" class="btn-custom btn-primary-custom">
-                {{ $aboutpage->cta_button_text }}
+            <a href="{{ $aboutpage->cta_button_link ?? '' }}" class="btn-custom btn-primary-custom">
+                {{ $aboutpage->cta_button_text ?? '' }}
             </a>
 
 
