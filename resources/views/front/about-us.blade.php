@@ -11,8 +11,8 @@
 
 
         <div class="hero-inner-content px-2 reveal">
-            <h1>{{ $aboutpage->banner_title }}</h1>
-            <p>{{ $aboutpage->banner_description }}</p>
+            <h1>{{ $aboutpage->banner_title ?? null }}</h1>
+            <p>{{ $aboutpage->banner_description ?? null }}</p>
         </div>
 
         <div class="breadcrumb">

@@ -19,10 +19,10 @@
 /public/hot
 /public/storage
 /public/uploads/*
-!/public/uploads/gallery-intros/default/*
-!/public/uploads/offer-intros/default/*
-!/public/uploads/video-sections/default/*
-!/public/uploads/welcome-sections/default/*
+/public/uploads/gallery-intros/default/*
+/public/uploads/offer-intros/default/*
+/public/uploads/video-sections/default/*
+/public/uploads/welcome-sections/default/*
 /storage/*.key
 /storage/pail
 /vendor
