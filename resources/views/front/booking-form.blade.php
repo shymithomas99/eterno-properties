@@ -100,7 +100,8 @@
                                             Arrival Date <span class="required">*</span>
                                         </label>
                                         <input type="date" id="arrivalDate" name="arrivalDate"
-                                            class="form-control-custom" placeholder="Select arrival date">
+                                            class="form-control-custom" min="{{ date('Y-m-d') }}"
+                                            placeholder="Select arrival date">
                                         <div class="field-error" data-error-for="arrivalDate"></div>
                                     </div>
 

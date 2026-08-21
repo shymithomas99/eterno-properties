@@ -73,7 +73,15 @@
         </div>
         <div class="core-values-content ">
             <div class="core-values-image reveal-left">
-                <img src="{{ asset('images/core-value-img1.jpg') }}" alt="Lush green forest landscape">
+                @php
+                    $host = request()->getHost();
+
+                    $coreValueImage = str_contains($host, 'eternocapithansdale.com')
+                        ? 'images/core-value-capithans.jpg'
+                        : 'images/core-value-img-camellia.jpg';
+                @endphp
+
+                <img src="{{ asset($coreValueImage) }}" alt="Lush green forest landscape">
             </div>
             <div class="core-values-accordions reveal-right">
 

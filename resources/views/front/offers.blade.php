@@ -5,7 +5,15 @@
     <!-- ========== HERO BANNER ========== -->
     @if ($offerIntro)
         <section class="hero-banner"
-            style="background-image:url('{{ asset('uploads/offer-intros/' . $offerIntro->banner_image) }}')">
+            style="
+        background:
+            linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)),
+            url('{{ $offerIntro?->banner_image
+                ? asset('uploads/offer-intros/' . $offerIntro->banner_image)
+                : asset('images/contact-hero-bg.jpg') }}')
+            center/cover no-repeat;
+    ">
+
             <div class="hero-inner-content px-2">
                 <h1>{{ $offerIntro->banner_title }}</h1>
                 <p>{{ $offerIntro->banner_description }}</p>

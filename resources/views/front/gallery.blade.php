@@ -4,8 +4,16 @@
 @section('content')
     <!-- ========== HERO BANNER ========== -->
     @if ($galleryIntro)
+        {{-- Gallery --}}
         <section class="hero-banner"
-            style="background-image:url('{{ asset('uploads/gallery-intros/' . $galleryIntro->banner_image) }}')">
+            style="
+        background:
+            linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)),
+            url('{{ $galleryIntro?->banner_image
+                ? asset('uploads/gallery-intros/' . $galleryIntro->banner_image)
+                : asset('images/contact-hero-bg.jpg') }}')
+            center/cover no-repeat;
+    ">
 
             <div class="hero-inner-content px-2">
                 <h1>{{ $galleryIntro->banner_title }}</h1>
@@ -84,7 +92,7 @@
 
             function applyFilters() {
                 const galleryNoResults = document.getElementById('galleryNoResults') || document.getElementById(
-                'noResults');
+                    'noResults');
                 visibleItems = [];
                 let visibleCount = 0;
 

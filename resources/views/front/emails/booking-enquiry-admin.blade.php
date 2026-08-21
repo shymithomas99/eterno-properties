@@ -14,7 +14,14 @@
 
         <tr>
             <td style="background:#0d6efd;padding:20px;text-align:center;">
-                <h2 style="margin:0;color:#ffffff;">New Booking Enquiry</h2>
+
+                <img src="{{ config('app.url') }}/images/logo.png" alt="Eterno Hotels & Resorts"
+                    style="display:block;margin:0 auto 15px auto;max-width:180px;width:100%;height:auto;">
+
+                <h2 style="margin:0;color:#ffffff;font-size:24px;">
+                    New Booking Enquiry
+                </h2>
+
             </td>
         </tr>
 
