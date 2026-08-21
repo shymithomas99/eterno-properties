@@ -14,39 +14,32 @@ use App\Http\Controllers\FrontController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/', [FrontController::class, 'home'])->name('home');
 
-Route::view('/', 'delete');
+Route::get('about-us', [FrontController::class, 'aboutUs'])
+    ->name('about-us');
 
-Route::prefix('laravel-demo')
-    ->group(function () {
+Route::get('experiences', [FrontController::class, 'experiences'])
+    ->name('experiences');
 
-        Route::get('/', [FrontController::class, 'home'])->name('home');
-
-        Route::get('about-us', [FrontController::class, 'aboutUs'])
-            ->name('about-us');
-
-        Route::get('experiences', [FrontController::class, 'experiences'])
-            ->name('experiences');
-
-        Route::get('contact', [FrontController::class, 'contact'])
-            ->name('contact');
+Route::get('contact', [FrontController::class, 'contact'])
+    ->name('contact');
 
 
-        Route::post('contact/enquiry', [FrontController::class, 'store'])
-            ->name('contact.enquiry.store');
+Route::post('contact/enquiry', [FrontController::class, 'store'])
+    ->name('contact.enquiry.store');
 
-        Route::post('/newsletter/subscribe', [FrontController::class, 'subscribe'])
-            ->name('newsletter.subscribe');
+Route::post('/newsletter/subscribe', [FrontController::class, 'subscribe'])
+    ->name('newsletter.subscribe');
 
-        Route::get('gallery', [FrontController::class, 'gallery'])->name('gallery');
+Route::get('gallery', [FrontController::class, 'gallery'])->name('gallery');
 
-        Route::get('offers', [FrontController::class, 'offers'])->name('offers');
+Route::get('offers', [FrontController::class, 'offers'])->name('offers');
 
-        Route::get('booking-form', [FrontController::class, 'bookingForm'])->name('booking-form');
-        Route::post('booking/enquiry', [FrontController::class, 'bookingStore'])->name('booking.enquiry.store');
+Route::get('booking-form', [FrontController::class, 'bookingForm'])->name('booking-form');
+Route::post('booking/enquiry', [FrontController::class, 'bookingStore'])->name('booking.enquiry.store');
 
-        Route::get('rooms', [FrontController::class, 'rooms'])->name('rooms');
-    });
+Route::get('rooms', [FrontController::class, 'rooms'])->name('rooms');
 // View::Composer(['partials.header','partials.footer'], function($view){
 //     $view->with([
 //         'settings'=>Setting::get(),
