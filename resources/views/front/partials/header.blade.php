@@ -37,9 +37,24 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="{{ route('home') }}">
+            {{--  <a class="navbar-brand" href="{{ route('home') }}">
                 <img src="{{ asset('images/logo.png') }}" alt="Eterno Hotels & Resorts">
+            </a>  --}}
+
+            @php
+                $host = request()->getHost();
+
+                $isCapithans = str_contains($host, 'eternocapithansdale.com');
+
+                $logo = $isCapithans ? 'images/capithans-logo.png' : 'images/camelia-logo.png';
+
+                $logoClass = $isCapithans ? 'capithans-logo' : 'camelia-logo';
+            @endphp
+
+            <a class="navbar-brand {{ $logoClass }}" href="{{ route('home') }}">
+                <img src="{{ asset($logo) }}" alt="Eterno Hotels & Resorts">
             </a>
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>

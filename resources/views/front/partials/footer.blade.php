@@ -57,7 +57,14 @@
             <div class="col-xl-4 col-lg-4 col-md-6 footer-col">
                 <div class="footer-logo-area">
                     <div class="footer-logo-img">
-                        <img src="{{ asset('images/footer-logo.png') }}" alt="eterno">
+                        {{--  <img src="{{ asset('images/footer-logo.png') }}" alt="eterno">  --}}
+                        @php
+                            $isCapithans = str_contains(request()->getHost(), 'eternocapithansdale.com');
+
+                            $footerLogo = $isCapithans ? 'images/capithans-logo.png' : 'images/camelia-logo.png';
+                        @endphp
+
+                        <img src="{{ asset($footerLogo) }}" alt="Eterno">
                     </div>
                     <div class="footer-address">
                         <strong>Conglomerate of</strong>

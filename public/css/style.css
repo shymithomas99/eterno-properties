@@ -321,6 +321,34 @@ h3 {
     filter: none;
 }
 
+
+/* =========================================
+   CAMELIA
+========================================= */
+
+.navbar .navbar-brand.camelia-logo img {
+    max-width: 216px;
+}
+
+.navbar.scrolled .navbar-brand.camelia-logo img {
+    max-width: 164px;
+    filter: none;
+}
+
+
+/* =========================================
+   CAPITHANS
+========================================= */
+
+.navbar .navbar-brand.capithans-logo img {
+    max-width: 200px;
+}
+
+.navbar.scrolled .navbar-brand.capithans-logo img {
+    max-width: 164px;
+    filter: none;
+}
+
 .navbar-brand {
     font-family: var(--font-heading);
     font-size: 1.8rem;
@@ -4191,5 +4219,21 @@ section {
     }
     .experience-icon {
         margin-bottom: 2rem;
+    }
+}
+
+@media (max-width: 1199px) {
+    .navbar .navbar-brand.camelia-logo img,
+    .navbar .navbar-brand.capithans-logo img {
+        max-width: 164px;
+    }
+}
+
+@media (max-width: 767px) {
+    .navbar.scrolled .navbar-brand.camelia-logo img {
+        max-width: 130px;
+    }
+    .navbar.scrolled .navbar-brand.capithans-logo img {
+        max-width: 116px;
     }
 }

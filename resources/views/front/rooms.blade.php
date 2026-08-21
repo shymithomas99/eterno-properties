@@ -1,5 +1,5 @@
 @extends('front.layouts.app')
-@section('title', 'Offers | ')
+@section('title', 'Rooms | ')
 {{--  <title>Room Selection | Eterno Resort</title>  --}}
 @section('content')
 
