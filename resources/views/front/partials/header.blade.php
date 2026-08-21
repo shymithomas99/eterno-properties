@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title') {{ config('app.name', 'Laravel') }}</title>
+
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/favicon-16x16.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/favicon-32x32.png') }}">
     <link rel="icon" type="image/png" sizes="48x48" href="{{ asset('images/favicon-48x48.png') }}">
@@ -30,6 +31,38 @@
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
     @stack('styles')
+
+    <!-- Google Analytics -->
+    @if (in_array(request()->getHost(), [
+        'eternocamelliaandelettaria.com',
+        'www.eternocamelliaandelettaria.com',
+    ]))
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-C7GQGRV4EN"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+
+            gtag('js', new Date());
+            gtag('config', 'G-C7GQGRV4EN');
+        </script>
+    @elseif (in_array(request()->getHost(), [
+        'eternocapithansdale.com',
+        'www.eternocapithansdale.com',
+    ]))
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-GS65XZRYBW"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+
+            gtag('js', new Date());
+            gtag('config', 'G-GS65XZRYBW');
+        </script>
+    @endif
+
 </head>
 
 <body>
