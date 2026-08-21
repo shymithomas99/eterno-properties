@@ -49,8 +49,30 @@
                 <!--<div class="sidebar-brand-icon rotate-n-15">-->
                 <!--    <i class="fas fa-laugh-wink"></i>-->
                 <!--</div>-->
-                <div class="sidebar-brand-text mx-3"><img class="" src="{{ asset('img/logo.png') }}"
-                        style="width: 90px;height: 55px;margin-left: 55px;margin-top: 7px;"></div>
+                <div class="sidebar-brand-text mx-3">
+                    {{--  <img class="" src="{{ asset('img/logo.png') }}"
+                        style="width: 90px;height: 55px;margin-left: 55px;margin-top: 7px;">  --}}
+
+                    @php
+                        $host = request()->getHost();
+
+                        if ($host === 'www.eternocapithansdale.com' || $host === 'eternocapithansdale.com') {
+                            $siteLogo = 'images/capithans-logo.png';
+                        } elseif (
+                            $host === 'www.eternocamelliaandelettaria.com' ||
+                            $host === 'eternocamelliaandelettaria.com'
+                        ) {
+                            $siteLogo = 'images/camelia-logo.png';
+                        } else {
+                            $siteLogo = 'images/camelia-logo.png';
+                        }
+                    @endphp
+
+                    <img src="{{ asset($siteLogo) }}" alt="Eterno Hotels & Resorts"
+                        style="width: 165px;height: 61px;margin-left: 25px;margin-top: 7px;">
+
+
+                </div>
             </a>
 
             <!-- Divider -->
