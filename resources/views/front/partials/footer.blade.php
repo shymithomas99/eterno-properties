@@ -59,12 +59,21 @@
                     <div class="footer-logo-img">
                         {{--  <img src="{{ asset('images/footer-logo.png') }}" alt="eterno">  --}}
                         @php
-                            $isCapithans = str_contains(request()->getHost(), 'eternocapithansdale.com');
+                            $host = request()->getHost();
 
-                            $footerLogo = $isCapithans ? 'images/capithans-logo.png' : 'images/camelia-logo.png';
+                            if ($host === 'www.eternocapithansdale.com' || $host === 'eternocapithansdale.com') {
+                                $siteLogo = 'images/capithans-logo.png';
+                            } elseif (
+                                $host === 'www.eternocamelliaandelettaria.com' ||
+                                $host === 'eternocamelliaandelettaria.com'
+                            ) {
+                                $siteLogo = 'images/camelia-logo.png';
+                            } else {
+                                $siteLogo = 'images/camelia-logo.png';
+                            }
                         @endphp
 
-                        <img src="{{ asset($footerLogo) }}" alt="Eterno">
+                        <img src="{{ asset($siteLogo) }}" alt="Eterno Hotels & Resorts">
                     </div>
                     <div class="footer-address">
                         <strong>Conglomerate of</strong>

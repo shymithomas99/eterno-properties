@@ -33,13 +33,11 @@
     @stack('styles')
 
     <!-- Google Analytics -->
-    @if (in_array(request()->getHost(), [
-        'eternocamelliaandelettaria.com',
-        'www.eternocamelliaandelettaria.com',
-    ]))
+    @if (in_array(request()->getHost(), ['eternocamelliaandelettaria.com', 'www.eternocamelliaandelettaria.com']))
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-C7GQGRV4EN"></script>
         <script>
             window.dataLayer = window.dataLayer || [];
+
             function gtag() {
                 dataLayer.push(arguments);
             }
@@ -47,13 +45,11 @@
             gtag('js', new Date());
             gtag('config', 'G-C7GQGRV4EN');
         </script>
-    @elseif (in_array(request()->getHost(), [
-        'eternocapithansdale.com',
-        'www.eternocapithansdale.com',
-    ]))
+    @elseif (in_array(request()->getHost(), ['eternocapithansdale.com', 'www.eternocapithansdale.com']))
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-GS65XZRYBW"></script>
         <script>
             window.dataLayer = window.dataLayer || [];
+
             function gtag() {
                 dataLayer.push(arguments);
             }
@@ -77,11 +73,19 @@
             @php
                 $host = request()->getHost();
 
-                $isCapithans = str_contains($host, 'eternocapithansdale.com');
-
-                $logo = $isCapithans ? 'images/capithans-logo.png' : 'images/camelia-logo.png';
-
-                $logoClass = $isCapithans ? 'capithans-logo' : 'camelia-logo';
+                if ($host === 'www.eternocapithansdale.com' || $host === 'eternocapithansdale.com') {
+                    $logo = 'images/capithans-logo.png';
+                    $logoClass = 'capithans-logo';
+                } elseif (
+                    $host === 'www.eternocamelliaandelettaria.com' ||
+                    $host === 'eternocamelliaandelettaria.com'
+                ) {
+                    $logo = 'images/camelia-logo.png';
+                    $logoClass = 'camelia-logo';
+                } else {
+                    $logo = 'images/camelia-logo.png';
+                    $logoClass = 'camelia-logo';
+                }
             @endphp
 
             <a class="navbar-brand {{ $logoClass }}" href="{{ route('home') }}">
