@@ -100,7 +100,7 @@ class FrontController extends Controller
         $galleries = Gallery::where('type', 1)
             ->where('status', Status::ACTIVE)
             ->orderBy('sort_order', 'ASC')
-            ->take(5)
+            ->take(6)
             ->get();
 
         $galleryType2Count = Gallery::where('type', 2)
