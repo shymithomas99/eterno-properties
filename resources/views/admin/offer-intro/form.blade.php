@@ -65,8 +65,7 @@
                             </div>
 
                             <div class="form-group col-md-6">
-                                <label><strong>Banner Image Required resolution: 1920 × 700 px & Maximum file size: 200 KB
-                                        <span class="text-danger">*</strong>
+                                <label><strong>Banner Image (1920 × 700 px, max 200 KB) <span class="text-danger">*</span></strong>
                                 </label>
                                 <div class="custom-file mb-3">
                                     <input type="file" class="custom-file-input" id="banner_image" name="banner_image"
