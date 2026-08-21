@@ -205,7 +205,7 @@ class FrontController extends Controller
     public function experiences()
     {
 
-        $experiencepage = ExperiencePage::first();
+        $experiencepage = ExperiencePage::where('type', 2)->first();
 
         $experiences = Experience::where('type', 2)
             ->where('status', 'active')
