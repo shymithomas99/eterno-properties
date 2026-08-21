@@ -33,16 +33,21 @@
     @stack('styles')
 
     <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-C7GQGRV4EN"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() {
-            dataLayer.push(arguments);
-        }
+    @if (in_array(request()->getHost(), [
+        'eternocamelliaandelettaria.com',
+        'www.eternocamelliaandelettaria.com',
+    ]))
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-C7GQGRV4EN"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
 
-        gtag('js', new Date());
-        gtag('config', 'G-C7GQGRV4EN');
-    </script>
+            gtag('js', new Date());
+            gtag('config', 'G-C7GQGRV4EN');
+        </script>
+    @endif
 
 </head>
 
