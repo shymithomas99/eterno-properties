@@ -4,7 +4,7 @@
 @section('content')
     <!-- ========== HERO BANNER ========== -->
 
-    @dd($experiencepage?->banner_image);
+
     <section class="hero-banner experience-banner"
         style="background:
             linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)),
