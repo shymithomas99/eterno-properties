@@ -18,12 +18,23 @@
             </td>
         </tr>
 
+
+
         <tr>
             <td style="padding:25px;">
                 <p style="margin-top:0;font-size:15px;">You have received a new booking enquiry through the website.</p>
 
                 <table width="100%" cellpadding="10" cellspacing="0" border="0"
                     style="border-collapse:collapse;font-size:14px;">
+
+                    <tr style="background:#fff3cd;">
+                        <td width="30%" style="font-weight:bold;border:1px solid #dee2e6;">
+                            Enquiry From
+                        </td>
+                        <td style="border:1px solid #dee2e6;">
+                            {{ $website }}
+                        </td>
+                    </tr>
 
                     <tr style="background:#f8f9fa;">
                         <td width="30%" style="font-weight:bold;border:1px solid #dee2e6;">Name</td>

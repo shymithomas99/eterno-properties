@@ -376,15 +376,15 @@ class FrontController extends Controller
 
         $enquiry = ContactEnquiry::create($data);
 
-
+        $website = request()->getHost();
 
         Mail::to(env('MAIL_ADMIN_ADDRESS'))
-            ->send(new ContactEnquiryAdminMail($enquiry));
+            ->send(new ContactEnquiryAdminMail($enquiry, $website));
 
 
 
         Mail::to($enquiry->email)
-            ->send(new ContactEnquiryUserMail($enquiry));
+            ->send(new ContactEnquiryUserMail($enquiry, $website));
 
 
         return response()->json([
@@ -472,7 +472,13 @@ class FrontController extends Controller
     public function bookingForm()
     {
 
-        $rooms = Room::orderBy('sort_order', 'asc')->get();
+        // $rooms = Room::orderBy('sort_order', 'asc')->get();
+
+        $rooms = Room::where('type', 2)
+            ->where('status', 'active')
+            ->orderBy('sort_order', 'asc')
+            ->get();
+
         $bookingPage = BookingPage::first();
 
         $amenityCategories = AmenityCategory::with('amenities')
@@ -576,10 +582,11 @@ class FrontController extends Controller
             'message' => $message,
         ]);
 
+        $website = request()->getHost();
         // Send notification emails
         try {
-            Mail::to(env('MAIL_ADMIN_ADDRESS'))->send(new BookingEnquiryAdminMail($enquiry));
-            Mail::to($enquiry->email)->send(new BookingEnquiryUserMail($enquiry));
+            Mail::to(env('MAIL_ADMIN_ADDRESS'))->send(new BookingEnquiryAdminMail($enquiry, $website));
+            Mail::to($enquiry->email)->send(new BookingEnquiryUserMail($enquiry, $website));
         } catch (\Throwable $e) {
             \Log::error('Booking enquiry mail error', ['message' => $e->getMessage()]);
         }

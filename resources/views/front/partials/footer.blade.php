@@ -54,7 +54,7 @@
     <div class="container">
         <div class="row footer-main-row reveal">
             <!-- Logo & Address -->
-            <div class="col-xl-3 col-lg-4 col-md-6 footer-col">
+            <div class="col-xl-4 col-lg-4 col-md-6 footer-col">
                 <div class="footer-logo-area">
                     <div class="footer-logo-img">
                         <img src="{{ asset('images/footer-logo.png') }}" alt="eterno">
@@ -69,7 +69,7 @@
             </div>
 
             <!-- Quick Links -->
-            <div class="col-xl-3 col-lg-4 col-md-6 footer-col">
+            <div class="col-xl-4 col-lg-4 col-md-6 footer-col">
                 <div class="footer-links-area d-flex justify-content-start justify-content-lg-center">
                     <div>
                         <h5 class="footer-heading">Quick Links</h5>
@@ -86,23 +86,7 @@
                 </div>
             </div>
 
-            <!-- Our Resorts -->
-            <div class="col-xl-2 col-lg-4 col-md-6 footer-col">
-                <div
-                    class="footer-links-area d-flex justify-content-start justify-content-md-start justify-content-lg-center">
-                    <div>
-                        <h5 class="footer-heading">Our Resorts</h5>
-                        <ul class="footer-links">
-                            @forelse ($resorts as $resort)
-                                <li> <a href="{{ $resort->url }}"> {{ $resort->name }} </a>
-                                </li>
-                            @empty
-                                <li> <span>No resorts available</span> </li>
-                            @endforelse
-                        </ul>
-                    </div>
-                </div>
-            </div>
+
 
             <!-- Contact Us -->
             <div class="col-xl-4  col-md-6 footer-col">

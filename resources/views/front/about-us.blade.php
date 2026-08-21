@@ -37,30 +37,32 @@
     </section>
 
     <!-- ========== PHILOSOPHY SECTION ========== -->
-    <section class="philosophy-section reveal">
-        <h2>Our Philosophy</h2>
-        <div class="philosophy-cards">
+    @if ($aboutphilosophy->isNotEmpty())
+        <section class="philosophy-section reveal">
+            <h2>Our Philosophy</h2>
+            <div class="philosophy-cards">
 
-            @foreach ($aboutphilosophy as $philosophy)
-                <div class="philosophy-card">
+                @foreach ($aboutphilosophy as $philosophy)
+                    <div class="philosophy-card">
 
-                    <div class="icon">
                         <div class="icon">
-                            @if ($philosophy->icon_image)
-                                <img src="{{ asset($philosophy->icon_image) }}" alt="{{ $philosophy->title }}"
-                                    class="img-fluid">
-                            @endif
+                            <div class="icon">
+                                @if ($philosophy->icon_image)
+                                    <img src="{{ asset($philosophy->icon_image) }}" alt="{{ $philosophy->title }}"
+                                        class="img-fluid">
+                                @endif
+                            </div>
                         </div>
+
+                        <h4>{{ $philosophy->title ?? '' }}</h4>
+
+                        <p>{{ $philosophy->description ?? '' }}</p>
+
                     </div>
-
-                    <h4>{{ $philosophy->title ?? '' }}</h4>
-
-                    <p>{{ $philosophy->description ?? '' }}</p>
-
-                </div>
-            @endforeach
-        </div>
-    </section>
+                @endforeach
+            </div>
+        </section>
+    @endif
 
 
     <!-- ========== CORE VALUES SECTION ========== -->
@@ -102,7 +104,7 @@
     <!-- ========== CTA SECTION ========== -->
     <div class="element-top position-relative ">
         <div class="element-bg-2">
-            <img src="images/element-bg-top.png" alt="" class="img-fluid">
+            <img src="{{ asset('images/element-bg-top.png') }}" alt="" class="img-fluid">
         </div>
     </div>
 

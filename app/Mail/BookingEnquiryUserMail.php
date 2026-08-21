@@ -12,7 +12,12 @@ class BookingEnquiryUserMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public BookingEnquiry $enquiry) {}
+    // public function __construct(public BookingEnquiry $enquiry) {}
+
+    public function __construct(
+        public BookingEnquiry $enquiry,
+        public string $website
+    ) {}
 
     public function build()
     {

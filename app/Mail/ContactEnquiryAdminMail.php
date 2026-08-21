@@ -14,8 +14,11 @@ use Illuminate\Queue\SerializesModels;
 class ContactEnquiryAdminMail extends Mailable
 {
     use Queueable, SerializesModels;
-    public function __construct(public ContactEnquiry $enquiry) {}
 
+    public function __construct(
+        public ContactEnquiry $enquiry,
+        public string $website
+    ) {}
 
 
     public function build()
