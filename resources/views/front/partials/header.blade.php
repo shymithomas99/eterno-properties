@@ -47,6 +47,20 @@
             gtag('js', new Date());
             gtag('config', 'G-C7GQGRV4EN');
         </script>
+    @elseif (in_array(request()->getHost(), [
+        'eternocapithansdale.com',
+        'www.eternocapithansdale.com',
+    ]))
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-GS65XZRYBW"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+
+            gtag('js', new Date());
+            gtag('config', 'G-GS65XZRYBW');
+        </script>
     @endif
 
 </head>
