@@ -90,11 +90,11 @@
 
             <!-- Nav Item - Tables -->
 
-            <li class="nav-item {{ request()->is('admin/resorts/1*') ? 'active' : '' }}">
+            {{--  <li class="nav-item {{ request()->is('admin/resorts/1*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('admin.resorts.index', 1) }}"> <i class="fas fa-building"></i>
                     <span>Resorts</span>
                 </a>
-            </li>
+            </li>  --}}
 
 
             @php
@@ -166,7 +166,7 @@
                             href="{{ route('admin.rooms.index', 1) }}">
                             Home Rooms
                         </a>
-
+                        {{--  
                         @php
                             $homeResortMenuOpen =
                                 request()->is('admin/resort-intro*') || request()->is('admin/resorts/2*');
@@ -192,7 +192,7 @@
                                     Resorts
                                 </a>
                             </div>
-                        </div>
+                        </div>  --}}
 
                         <a class="collapse-item {{ request()->is('admin/video-section*') ? 'active' : '' }}"
                             href="{{ route('admin.video-section.edit') }}">
@@ -359,11 +359,11 @@
 
             </li>
 
-            <li class="nav-item {{ request()->is('admin/resorts/3*') ? 'active' : '' }}">
+            {{--  <li class="nav-item {{ request()->is('admin/resorts/3*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('admin.resorts.index', 3) }}"> <i class="fas fa-building"></i>
                     <span>Resorts (Mega Menu)</span>
                 </a>
-            </li>
+            </li>  --}}
 
 
             @php
@@ -400,112 +400,56 @@
 
 
 
-            {{--  <li
-                class="nav-item {{ request()->is('admin/rooms*') || request()->is('admin/rooms*') || request()->is('admin/rooms*') ? 'active' : '' }}">
-
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseRooms">
-                    <i class="fas fa-map"></i>
-                    <span>Manage Rooms</span>
-                </a>
-
-                <div id="collapseRooms"
-                    class="collapse {{ request()->is('admin/rooms*') || request()->is('admin/rooms*') || request()->is('admin/rooms*') ? 'show' : '' }}"
-                    data-parent="#accordionSidebar">
-
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item {{ request()->is('admin/rooms*') ? 'active' : '' }}"
-                            href="{{ route('admin.rooms.index', 2) }}">
-                            Rooms Page
-                        </a>
-
-                    </div>
-
-                </div>
-
-            </li>  --}}
-
-
-            <li
-                class="nav-item
-    {{ request()->is('admin/rooms*') ||
-    request()->is('admin/amenity-categories*') ||
-    request()->is('admin/amenities*')
-        ? 'active'
-        : '' }}">
-
-                <a class="nav-link
-        {{ request()->is('admin/rooms*') ||
-        request()->is('admin/amenity-categories*') ||
-        request()->is('admin/amenities*')
-            ? ''
-            : 'collapsed' }}"
-                    href="#" data-toggle="collapse" data-target="#collapseRooms"
-                    aria-expanded="{{ request()->is('admin/rooms*') ||
+            @php
+                $roomMenuOpen =
+                    request()->is('admin/room-page*') ||
+                    request()->is('admin/rooms/2*') ||
                     request()->is('admin/amenity-categories*') ||
-                    request()->is('admin/amenities*')
-                        ? 'true'
-                        : 'false' }}">
+                    request()->is('admin/amenities*');
+            @endphp
+
+            <li class="nav-item {{ $roomMenuOpen ? 'active' : '' }}">
+
+                <a class="nav-link {{ $roomMenuOpen ? '' : 'collapsed' }}" href="#" data-toggle="collapse"
+                    data-target="#collapseRooms" aria-expanded="{{ $roomMenuOpen ? 'true' : 'false' }}"
+                    aria-controls="collapseRooms">
 
                     <i class="fas fa-map"></i>
-
                     <span>Manage Rooms</span>
 
                 </a>
 
-
-                <div id="collapseRooms"
-                    class="collapse
-         {{ request()->is('admin/rooms*') ||
-         request()->is('admin/amenity-categories*') ||
-         request()->is('admin/amenities*')
-             ? 'show'
-             : '' }}"
-                    data-parent="#accordionSidebar">
+                <div id="collapseRooms" class="collapse {{ $roomMenuOpen ? 'show' : '' }}"
+                    aria-labelledby="headingRooms" data-parent="#accordionSidebar">
 
                     <div class="bg-white py-2 collapse-inner rounded">
 
                         {{-- Room Page --}}
-                        <a class="collapse-item
-                {{ request()->is('admin/room-page*') ? 'active' : '' }}"
+                        <a class="collapse-item {{ request()->is('admin/room-page*') ? 'active' : '' }}"
                             href="{{ route('admin.room-page.edit') }}">
-
                             Room Page
-
                         </a>
 
                         {{-- Rooms --}}
-                        <a class="collapse-item
-                {{ request()->is('admin/rooms/2*') ? 'active' : '' }}"
+                        <a class="collapse-item {{ request()->is('admin/rooms/2*') ? 'active' : '' }}"
                             href="{{ route('admin.rooms.index', 2) }}">
-
                             Rooms
-
                         </a>
-
 
                         {{-- Amenity Categories --}}
-                        <a class="collapse-item
-                {{ request()->is('admin/amenity-categories*') ? 'active' : '' }}"
+                        <a class="collapse-item {{ request()->is('admin/amenity-categories*') ? 'active' : '' }}"
                             href="{{ route('admin.amenity-categories.index') }}">
-
                             Amenity Categories
-
                         </a>
 
-
                         {{-- Amenities --}}
-                        <a class="collapse-item
-                {{ request()->is('admin/amenities*') ? 'active' : '' }}"
+                        <a class="collapse-item {{ request()->is('admin/amenities*') ? 'active' : '' }}"
                             href="{{ route('admin.amenities.index') }}">
-
                             Amenities
-
                         </a>
 
                     </div>
-
                 </div>
-
             </li>
 
 
@@ -636,11 +580,11 @@
             </li>
 
 
-            <li class="nav-item {{ request()->is('admin/resorts/4*') ? 'active' : '' }}">
+            {{--  <li class="nav-item {{ request()->is('admin/resorts/4*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('admin.resorts.index', 4) }}"> <i class="fas fa-building"></i>
                     <span>Resorts (Book Now)</span>
                 </a>
-            </li>
+            </li>  --}}
 
             {{--  <li class="nav-item {{ request()->is('admin/contact-page*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('admin.contact-page.edit') }}"> <i class="fas fa-envelope"></i>
